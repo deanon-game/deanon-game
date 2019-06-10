@@ -11,7 +11,6 @@ branches:
     - gh-pages
 stages:
   - lint
-  - test
   - build
   - deploy
 jobs:
@@ -20,10 +19,6 @@ jobs:
       script:
         # Run linter
         - yarn lint
-    - stage: test
-      script:
-        # Run tests
-        - yarn test
     - stage: build
       script:
         # Build all
