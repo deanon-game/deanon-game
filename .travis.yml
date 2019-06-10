@@ -1,16 +1,11 @@
 language: node_js
 node_js:
-  - "10"
-  - "node"
+  - "8.9"
 env:
   - WEBPACK_VERSION=4
 install:
-  # Use npm 5.7.x since it has introduced `npm ci`
-  - if [[ `npm -v` != 5.7* ]]; then npm install -g npm@'>=5.7.1'; fi
-  - npm ci
-before_script:
-  # Install Webpack version
-  - if [[ -n "$WEBPACK_VERSION" ]]; then npm install --no-save webpack@$WEBPACK_VERSION; fi
+  - npm i yarn -g
+  - yarn
 branches:
   except:
     - gh-pages
@@ -24,16 +19,16 @@ jobs:
     - stage: lint
       script:
         # Run linter
-        - npm run lint
+        - yarn lint
     - stage: test
       script:
         # Run tests
-        - npm run test
+        - yarn test
     - stage: build
       script:
         # Build all
-        - npm run build
+        - yarn build
     - stage: deploy
       script:
         # Build all
-        - npm run deploy
+        - yarn deploy
