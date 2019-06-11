@@ -12,3 +12,11 @@ yarn
 ```
 yarn start
 ```
+## linting files
+```
+yarn lint
+```
+## fix files
+```
+yarn lint:fix
+```
