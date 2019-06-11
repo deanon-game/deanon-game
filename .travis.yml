@@ -1,9 +1,10 @@
 language: node_js
 node_js:
-  - "8.9"
+  - "10.16.0"
 install:
-  - npm i yarn -g
+  - cd deanon-front
   - yarn
+  - cd ..
 branches:
   except:
     - gh-pages
@@ -13,4 +14,5 @@ jobs:
   include:
     - stage: lint
       script:
+        - cd deanon-front
         - yarn lint

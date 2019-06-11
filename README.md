@@ -1,39 +1,14 @@
 # deanon-game
 
-## Install Yarn
+## add yarn global
 ```
-npm i yarn -g 
+npm i yarn -g
 ```
-
-## Project setup
+## install backend dependencies
 ```
 yarn
 ```
-
-### Compiles and hot-reloads for development
+## up backend
 ```
-yarn serve
+yarn start
 ```
-
-### Compiles and minifies for production
-```
-yarn build
-```
-
-### Run your tests
-```
-yarn test
-```
-
-### Lints and fixes files
-```
-yarn lint
-```
-
-### Run your unit tests
-```
-yarn test:unit
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).

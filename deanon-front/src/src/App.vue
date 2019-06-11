@@ -8,14 +8,11 @@
   </div>
 </template>
 
-<script lang="ts">
-import 'normalize.css';
-import { Component, Vue } from 'vue-property-decorator';
+<script>
+import 'normalize.css'
 
-@Component
-export default class App extends Vue {}
+export default {}
 </script>
-
 
 <style>
 .app {
