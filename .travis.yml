@@ -1,8 +1,6 @@
 language: node_js
 node_js:
   - "8.9"
-env:
-  - WEBPACK_VERSION=4
 install:
   - npm i yarn -g
   - yarn
@@ -11,7 +9,6 @@ branches:
     - gh-pages
 stages:
   - lint
-  - build
   - deploy
 jobs:
   include:
@@ -19,11 +16,7 @@ jobs:
       script:
         # Run linter
         - yarn lint
-    - stage: build
-      script:
-        # Build all
-        - yarn build
     - stage: deploy
       script:
-        # Build all
+        - yarn build
         - yarn deploy
