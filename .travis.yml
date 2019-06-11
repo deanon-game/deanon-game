@@ -4,6 +4,9 @@ node_js:
 install:
   - npm i yarn -g
   - yarn
+  - cd deanon-front
+  - yarn
+  - cd ..
 branches:
   except:
     - gh-pages
@@ -13,4 +16,5 @@ jobs:
   include:
     - stage: lint
       script:
+        - cd deanon-front
         - yarn lint
