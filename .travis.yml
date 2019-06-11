@@ -9,14 +9,8 @@ branches:
     - gh-pages
 stages:
   - lint
-  - deploy
 jobs:
   include:
     - stage: lint
       script:
-        # Run linter
         - yarn lint
-    - stage: deploy
-      script:
-        - yarn build
-        - yarn deploy
