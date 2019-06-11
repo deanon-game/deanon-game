@@ -4,11 +4,9 @@
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
+<script>
 
-@Component
-export default class GamePlayRoom extends Vue {}
+export default {}
 </script>
 
 <style scoped>

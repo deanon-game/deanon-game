@@ -1,15 +1,15 @@
 <template>
   <div class="settings">
     <label class="settings__label">
-      Название игры 
+      Название игры
       <input type="text" placeholder="Случайное название" v-model="gameName">
     </label>
     <label class="settings__label">
-      Количество попыток для угадывания каждому игроку 
+      Количество попыток для угадывания каждому игроку
       <input type="number" v-model="tryCount">
     </label>
-    <label class="settings__label"> 
-      Дополнительные правила для ваших игроков 
+    <label class="settings__label">
+      Дополнительные правила для ваших игроков
       <textarea v-model="additionalRules" disabled/>
     </label>
     <label class="settings__label">
@@ -23,16 +23,19 @@
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
+<script>
 
-@Component
-export default class CreateGame extends Vue {
-  public gameName: string = '';
-  public tryCount: number = 3;
-  public additionalRules: string = '';
-  public additionalWishes: string = 'Игра началась!';
-  public winnerCongratulateMsg: string = 'Поздравляем победителя!';
+export default {
+  data () {
+    return {
+      gameName: '',
+      tryCount: 3,
+      additionalRules: '',
+      additionalWishes: 'Игра началась!',
+      winnerCongratulateMsg: 'Поздравляем победителя!'
+
+    }
+  }
 }
 </script>
 
@@ -45,6 +48,6 @@ export default class CreateGame extends Vue {
 .settings__label {
   display: flex;
   flex-direction: column;
-  padding: 10px 0; 
+  padding: 10px 0;
 }
 </style>
