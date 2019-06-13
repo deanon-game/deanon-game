@@ -16,6 +16,11 @@ export default new Router({
       path: '/join',
       name: 'join',
       component: () => import(/* webpackChunkName: "JoinGame" */ './views/JoinGame.vue')
+    },
+    {
+      path: '/lobby',
+      name: 'lobby',
+      component: () => import('./views/GamePreRoom.vue')
     }
   ]
 })
