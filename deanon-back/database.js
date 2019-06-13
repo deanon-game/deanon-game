@@ -1,9 +1,8 @@
-const config = require('./fb-config.js');
-const firebase = require('firebase');
-require('firebase/firestore');
+const config = require('./fb-config.js')
+const firebase = require('firebase')
+require('firebase/firestore')
 
 firebase.initializeApp(config)
-var db = firebase.firestore();
+var db = firebase.firestore()
 
-module.exports = db;
-
+module.exports = db
