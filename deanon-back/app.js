@@ -35,7 +35,7 @@ app.post('/create', function (req, res) {
     params: req.body
   })
     .then(() => {
-      res.send('Connect url: /games/' + gameID)
+      res.send(gameID)
     })
     .catch(() => {
       console.log('cant create game')
