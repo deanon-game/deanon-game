@@ -42,8 +42,8 @@ export default {
   methods: {
     createGame () {
       axios.post('http://localhost:3000/create', this.gameSettings)
-      .then( () => {
-        this.$router.push('/lobby')
+      .then( (res) => {
+        this.$router.push('/lobby/' + res)
       })
       .catch((e) => console.log(e))
     }

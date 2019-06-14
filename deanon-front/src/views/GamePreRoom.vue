@@ -5,7 +5,15 @@
 </template>
 
 <script>
-export default {}
+export default {
+  data () {
+    return {
+    gameName: '',
+    gameID: '',
+    players: []
+    }
+  }
+}
 </script>
 
 <style scoped>

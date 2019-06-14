@@ -9,7 +9,8 @@
   },
   "dependencies": {
     "express": "~4.16.1",
-    "firebase": "^6.1.1"
+    "firebase": "^6.1.1",
+    "firestore": "^1.1.6"
   },
   "devDependencies": {
     "eslint": "^5.16.0",
