@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "start": "node ./bin/www",
+    "start": "node deanon-back/app.js",
     "lint": "eslint deanon-back/**/*.js",
     "lint:fix": "eslint deanon-back/**/*.js --fix"
   },
