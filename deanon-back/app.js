@@ -30,12 +30,15 @@ app.get('/', function (req, res) {
     this game
 */
 app.post('/create', function (req, res) {
-  let gameID = randomID('newgame')
+  let gameID = randomID(req.body.gameName)
   db.collection('games').doc(gameID).set({
-    params: req.body
+    params: req.body,
+    maxPlayers: 5,
+    currentPlayers: []
   })
     .then(() => {
-      res.send('Connect url: /games/' + gameID)
+      // выдать ссылку на лобби
+      res.send('/lobby/' + gameID)
     })
     .catch(() => {
       console.log('cant create game')

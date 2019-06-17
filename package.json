@@ -3,13 +3,14 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "start": "node deanon-back/app.js",
+    "start": "node ./deanon-back/app.js",
     "lint": "eslint deanon-back/**/*.js",
     "lint:fix": "eslint deanon-back/**/*.js --fix"
   },
   "dependencies": {
     "express": "~4.16.1",
-    "firebase": "^6.1.1"
+    "firebase": "^6.1.1",
+    "firestore": "^1.1.6"
   },
   "devDependencies": {
     "eslint": "^5.16.0",
