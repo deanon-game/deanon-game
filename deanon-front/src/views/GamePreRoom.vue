@@ -10,20 +10,11 @@ import firestore from '../firebase.js'
 import firebase from 'firebase'
 
 export default {
-  beforeMount () {
-    this.playerName = prompt('Username', 'player1')
-  },
-  mounted () {
-    firestore.collection('games').doc(this.$route.params.id)
-      .update({
-        currentPlayers: firebase.firestore.FieldValue.arrayUnion(this.playerName)
-      })
-    firestore.collection('games').doc(this.$route.params.id)
-      .get().then(doc => {
-        this.players = doc.data().currentPlayers
-      })
-  },
   created () {
+    if (!this.playerName) {
+      this.playerName = prompt('Username', 'user')
+    }
+    this.initLobby()
     firestore.collection('games').doc(this.$route.params.id)
       .onSnapshot(doc => {
         this.players = doc.data().currentPlayers
@@ -31,10 +22,27 @@ export default {
   },
   data () {
     return {
-      playerName: '',
+      playerName: null,
       gameName: '',
       gameID: '',
-      players: []
+      players: null
+    }
+  },
+  computed: {
+  },
+  methods: {
+    // Перекинуть говно ниже на бек, реализовать только отправку пользовательского никнейма
+    initLobby () {
+      firestore.collection('games').doc(this.$route.params.id)
+        .update({
+          currentPlayers: firebase.firestore.FieldValue.arrayUnion(this.playerName)
+        })
+      // Сформировать дату из дока с необходимой инфой, кинуть на бек
+      firestore.collection('games').doc(this.$route.params.id)
+        .get().then(doc => {
+          this.players = doc.data().currentPlayers
+          this.gameName = doc.data().paramas.gameName
+        })
     }
   },
   beforeDestroy () {
