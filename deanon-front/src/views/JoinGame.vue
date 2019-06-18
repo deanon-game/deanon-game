@@ -17,12 +17,12 @@ import axios from 'axios'
 export default {
   created () {
     axios.get('http://localhost:3000')
-    .then((res) => {
-      this.games = res.data
-    })
-    .catch((e) => {
-      console.log(e)
-    })
+      .then((res) => {
+        this.games = res.data
+      })
+      .catch((e) => {
+        console.log(e)
+      })
   },
   data () {
     return {

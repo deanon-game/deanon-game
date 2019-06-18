@@ -42,7 +42,7 @@ export default {
   methods: {
     createGame () {
       axios.post('http://localhost:3000/create', this.gameSettings)
-      .then(() => {
+        .then(() => {
           this.$router.push('/lobby' /* + lobby id  */)
         })
         .catch((e) => console.log(e))
