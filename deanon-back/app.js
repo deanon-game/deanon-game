@@ -1,5 +1,6 @@
 const express = require('express')
 const db = require('./database.js')
+const Firebase = require('firebase')
 const randomID = require('./utills/randomID.js')
 const app = express()
 
@@ -42,6 +43,19 @@ app.post('/create', function (req, res) {
     })
     .catch(() => {
       console.log('cant create game')
+    })
+})
+
+app.post('/connect', function (req, res) {
+  console.log(req.body.name)
+  db.collection('games').doc(req.body.id)
+    .update({
+      currentPlayers: Firebase.firestore.FieldValue.arrayUnion(req.body.name)
+    })
+  // Сформировать дату из дока с необходимой инфой, кинуть на бек
+  db.collection('games').doc(req.body.id)
+    .get().then(doc => {
+      res.send({ players: doc.data().currentPlayers, params: doc.data().params.gameName })
     })
 })
 
