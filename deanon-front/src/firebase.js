@@ -1,6 +1,4 @@
 import Firebase from 'firebase'
-// eslint-disable-next-line no-unused-vars
-import Firestore from 'firebase/firestore'
 
 const config = {
   apiKey: 'AIzaSyDCOmnYpsURAe2wHP9lYsX_YXSRUd_FPzA',
