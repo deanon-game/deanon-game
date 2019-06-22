@@ -4,8 +4,12 @@
     {{players}}
     <form v-if="!isNoNickname">
       <label class="input__label">
-        Для начала введите имя
+        Введите никнейм
         <input type="text" placeholder="Nickname" v-model="playerName">
+      </label>
+      <label class="input__label">
+        Настоящее имя
+        <input type="text" placeholder="Реальное имя" v-model="trueName">
       </label>
       <button @click.prevent="connectToLobby">Подтвердить</button>
     </form>
@@ -13,8 +17,6 @@
 </template>
 
 <script>
-import firestore from '../firebase.js'
-import firebase from 'firebase'
 import axios from 'axios'
 
 export default {
@@ -31,6 +33,7 @@ export default {
     return {
       isNoNickname: true,
       playerName: null,
+      trueName: null,
       gameName: '',
       gameID: '',
       players: null
@@ -44,7 +47,7 @@ export default {
      @param name - player name
      */
     initLobby () {
-      axios.post('http://localhost:3000/connect', { id: this.$route.params.id, name: this.playerName })
+      axios.post('http://localhost:3000/connect', { id: this.$route.params.id, name: this.playerName, realName: this.trueName })
         .then(res => {
           this.players = res.data.players
           this.gameName = res.data.params.gameName
@@ -56,13 +59,6 @@ export default {
       this.isNoNickname = !this.isNoNickname
       this.initLobby()
     }
-  },
-  // Не работает и пофиг
-  beforeDestroy () {
-    firestore.collection('games').doc(this.$route.params.id)
-      .update({
-        currentPlayers: firebase.firestore.FieldValue.arrayRemove(this.playerName)
-      })
   }
 }
 </script>
