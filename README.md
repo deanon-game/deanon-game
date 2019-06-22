@@ -8,9 +8,9 @@ npm i yarn -g
 ```
 yarn
 ```
-## up backend
+## up backend && front
 ```
-yarn start
+yarn dev
 ```
 ## linting files
 ```
