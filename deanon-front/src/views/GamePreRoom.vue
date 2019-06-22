@@ -2,7 +2,7 @@
   <div>
     Тут будет подготовка к игре
     {{players}}
-    <form v-if="!isNoNickname">
+    <form v-if="isFormActive">
       <label class="input__label">
         Введите никнейм
         <input type="text" placeholder="Nickname" v-model="playerName">
@@ -21,17 +21,18 @@ import axios from 'axios'
 
 export default {
   created () {
-    if (localStorage.name) {
+    if (localStorage.name && localStorage.realName) {
       this.playerName = localStorage.name
-      this.initLobby()
-    }
-    if (this.playerName == null) {
-      this.isNoNickname = !this.isNoNickname
+      this.trueName = localStorage.realName
+      if (this.isDataValid) {
+        this.isFormActive = false
+        this.initLobby()
+      }
     }
   },
   data () {
     return {
-      isNoNickname: true,
+      isFormActive: true,
       playerName: null,
       trueName: null,
       gameName: '',
@@ -56,8 +57,15 @@ export default {
     /* Подтверждаем данные из формы и вызываем initLobby */
     connectToLobby () {
       localStorage.name = this.playerName
-      this.isNoNickname = !this.isNoNickname
+      localStorage.realName = this.trueName
+      this.isFormActive = false
       this.initLobby()
+    },
+    isDataValid () {
+      if (this.isFormActive && this.trueName) {
+        return true
+      }
+      return false
     }
   }
 }
