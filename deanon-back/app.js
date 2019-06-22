@@ -35,7 +35,8 @@ app.post('/create', function (req, res) {
   db.collection('games').doc(gameID).set({
     params: req.body,
     maxPlayers: 5,
-    currentPlayers: []
+    currentPlayers: [],
+    realNames: {}
   })
     .then(() => {
       // выдать ссылку на лобби
@@ -47,11 +48,15 @@ app.post('/create', function (req, res) {
 })
 
 app.post('/connect', function (req, res) {
-  console.log(req.body.name)
   db.collection('games').doc(req.body.id)
     .update({
       currentPlayers: Firebase.firestore.FieldValue.arrayUnion(req.body.name)
     })
+    //Реализуем добавление реального имени в объект realNames, чтобы потом угадывать
+    const realNameUpd = {}
+    realNameUpd['realNames.' + req.body.name] = req.body.realName
+  db.collection('games').doc(req.body.id)
+    .update(realNameUpd)
   // Сформировать дату из дока с необходимой инфой, кинуть на бек
   db.collection('games').doc(req.body.id)
     .get().then(doc => {

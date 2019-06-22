@@ -2,10 +2,14 @@
   <div>
     Тут будет подготовка к игре
     {{players}}
-    <form v-if="!isNoNickname">
+    <form v-if="isFormActive">
       <label class="input__label">
-        Для начала введите имя
+        Введите никнейм
         <input type="text" placeholder="Nickname" v-model="playerName">
+      </label>
+      <label class="input__label">
+        Настоящее имя
+        <input type="text" placeholder="Реальное имя" v-model="trueName">
       </label>
       <button @click.prevent="connectToLobby">Подтвердить</button>
     </form>
@@ -13,24 +17,24 @@
 </template>
 
 <script>
-import firestore from '../firebase.js'
-import firebase from 'firebase'
 import axios from 'axios'
 
 export default {
   created () {
-    if (localStorage.name) {
+    if (localStorage.name && localStorage.realName) {
       this.playerName = localStorage.name
-      this.initLobby()
-    }
-    if (this.playerName == null) {
-      this.isNoNickname = !this.isNoNickname
+      this.trueName = localStorage.realName
+      if (this.isDataValid) {
+        this.isFormActive = false
+        this.initLobby()
+      }
     }
   },
   data () {
     return {
-      isNoNickname: true,
+      isFormActive: true,
       playerName: null,
+      trueName: null,
       gameName: '',
       gameID: '',
       players: null
@@ -44,7 +48,7 @@ export default {
      @param name - player name
      */
     initLobby () {
-      axios.post('http://localhost:3000/connect', { id: this.$route.params.id, name: this.playerName })
+      axios.post('http://localhost:3000/connect', { id: this.$route.params.id, name: this.playerName, realName: this.trueName })
         .then(res => {
           this.players = res.data.players
           this.gameName = res.data.params.gameName
@@ -53,16 +57,16 @@ export default {
     /* Подтверждаем данные из формы и вызываем initLobby */
     connectToLobby () {
       localStorage.name = this.playerName
-      this.isNoNickname = !this.isNoNickname
+      localStorage.realName = this.trueName
+      this.isFormActive = false
       this.initLobby()
+    },
+    isDataValid () {
+      if (this.isFormActive && this.trueName) {
+        return true
+      }
+      return false
     }
-  },
-  // Не работает и пофиг
-  beforeDestroy () {
-    firestore.collection('games').doc(this.$route.params.id)
-      .update({
-        currentPlayers: firebase.firestore.FieldValue.arrayRemove(this.playerName)
-      })
   }
 }
 </script>
