@@ -52,9 +52,9 @@ app.post('/connect', function (req, res) {
     .update({
       currentPlayers: Firebase.firestore.FieldValue.arrayUnion(req.body.name)
     })
-    //Реализуем добавление реального имени в объект realNames, чтобы потом угадывать
-    const realNameUpd = {}
-    realNameUpd['realNames.' + req.body.name] = req.body.realName
+    // Реализуем добавление реального имени в объект realNames, чтобы потом угадывать
+  const realNameUpd = {}
+  realNameUpd['realNames.' + req.body.name] = req.body.realName
   db.collection('games').doc(req.body.id)
     .update(realNameUpd)
   // Сформировать дату из дока с необходимой инфой, кинуть на бек
