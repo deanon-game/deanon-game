@@ -2,21 +2,26 @@
 
 ## add yarn global
 ```
-npm i yarn -g
+> npm i yarn -g
 ```
 ## install backend dependencies
 ```
-yarn
+> yarn
 ```
-## up backend
+## install fronted dependencies
 ```
-yarn start
+> cd deanon-front 
+deanon-front> yarn
 ```
-## linting files
+## up backend && front
 ```
-yarn lint
+> yarn dev
 ```
-## fix files
+## linting backend && front files
 ```
-yarn lint:fix
+> yarn lint
+```
+## fix backend && front files
+```
+> yarn lint:fix
 ```
