@@ -16,7 +16,8 @@
   "dependencies": {
     "express": "~4.16.1",
     "firebase": "^6.1.1",
-    "firestore": "^1.1.6"
+    "firestore": "^1.1.6",
+    "socket.io": "^2.2.0"
   },
   "devDependencies": {
     "concurrently": "^4.1.0",

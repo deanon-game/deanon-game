@@ -1,8 +1,11 @@
-const express = require('express')
+const express = require('express')()
 const db = require('./database.js')
 const Firebase = require('firebase')
 const randomID = require('./utills/randomID.js')
-const app = express()
+
+// init socket
+const http = require('http').createServer(express)
+const io = require('socket.io')(http)
 
 app.use(express.json())
 
@@ -47,6 +50,7 @@ app.post('/create', function (req, res) {
     })
 })
 
+// connect to lobby
 app.post('/connect', function (req, res) {
   db.collection('games').doc(req.body.id)
     .update({
@@ -64,6 +68,12 @@ app.post('/connect', function (req, res) {
     })
 })
 
-app.listen(3000, function () {
+/*
+Working with socket.io
+ */
+
+
+
+http.listen(3000, function () {
   console.log('шото работает')
 })
