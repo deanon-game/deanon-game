@@ -18,9 +18,15 @@
 
 <script>
 import axios from 'axios'
+import io from 'socket.io-client'
 
 export default {
   created () {
+    const socket = io('http://localhost:3000')
+    socket.emit('join room', this.$route.params.id)
+    socket.on('msg', data => {
+      console.log(data)
+    })
     if (localStorage.name && localStorage.realName) {
       this.playerName = localStorage.name
       this.trueName = localStorage.realName

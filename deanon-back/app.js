@@ -1,17 +1,30 @@
-const express = require('express')()
+
+// Firebase init
 const db = require('./database.js')
 const Firebase = require('firebase')
 const randomID = require('./utills/randomID.js')
+// Firebase init end
 
-// init socket
-const http = require('http').createServer(express)
+// server init
+const express = require('express')
+const app = express()
+const http = require('http').createServer(app)
 const io = require('socket.io')(http)
 
+// server init end
+io.on('connection', (socket) => {
+  console.log('Someone Connected')
+  socket.on('join room', (room) => {
+    socket.join(room)
+    io.to(room).emit('msg', 'room working')
+  })
+})
 app.use(express.json())
 
 app.use(function (req, res, next) {
-  res.header('Access-Control-Allow-Origin', '*')
+  res.header('Access-Control-Allow-Origin', 'http://localhost:8080')
   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept')
+  res.header('Access-Control-Allow-Credentials', 'true')
   next()
 })
 
@@ -51,6 +64,7 @@ app.post('/create', function (req, res) {
 })
 
 // connect to lobby
+
 app.post('/connect', function (req, res) {
   db.collection('games').doc(req.body.id)
     .update({
@@ -67,12 +81,6 @@ app.post('/connect', function (req, res) {
       res.send({ players: doc.data().currentPlayers, params: doc.data().params.gameName })
     })
 })
-
-/*
-Working with socket.io
- */
-
-
 
 http.listen(3000, function () {
   console.log('шото работает')
