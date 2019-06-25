@@ -10,13 +10,22 @@ const express = require('express')
 const app = express()
 const http = require('http').createServer(app)
 const io = require('socket.io')(http)
-
 // server init end
+
+/* 
+Opening socket connection and then listening for event 'join room'
+from client socket, and then add new listener for Database updates
+When database updating firestore calling onSnapshot methot and then sends
+new doc.data() to socket room.
+*/
 io.on('connection', (socket) => {
   console.log('Someone Connected')
-  socket.on('join room', (room) => {
+  socket.on('join room', (nick, room) => {
     socket.join(room)
-    io.to(room).emit('msg', 'room working')
+    console.log(nick + ' joined to: ' + room)
+    db.collection('games').doc(room).onSnapshot(doc => {
+      io.sockets.in(room).emit('new data', doc.data())
+    })
   })
 })
 app.use(express.json())
@@ -78,7 +87,7 @@ app.post('/connect', function (req, res) {
   // Сформировать дату из дока с необходимой инфой, кинуть на бек
   db.collection('games').doc(req.body.id)
     .get().then(doc => {
-      res.send({ players: doc.data().currentPlayers, params: doc.data().params.gameName })
+      res.send({ players: doc.data().currentPlayers, gameName: doc.data().params.gameName })
     })
 })
 

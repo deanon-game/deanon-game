@@ -1,7 +1,12 @@
 <template>
   <div>
     Тут будет подготовка к игре
-    {{players}}
+    <div>
+     PLAYERS: {{players}}
+    </div>
+    <div>
+     GAME NAME: {{ gameName }}
+    </div>
     <form v-if="isFormActive">
       <label class="input__label">
         Введите никнейм
@@ -22,11 +27,6 @@ import io from 'socket.io-client'
 
 export default {
   created () {
-    const socket = io('http://localhost:3000')
-    socket.emit('join room', this.$route.params.id)
-    socket.on('msg', data => {
-      console.log(data)
-    })
     if (localStorage.name && localStorage.realName) {
       this.playerName = localStorage.name
       this.trueName = localStorage.realName
@@ -41,8 +41,7 @@ export default {
       isFormActive: true,
       playerName: null,
       trueName: null,
-      gameName: '',
-      gameID: '',
+      gameName: null,
       players: null
     }
   },
@@ -56,8 +55,10 @@ export default {
     initLobby () {
       axios.post('http://localhost:3000/connect', { id: this.$route.params.id, name: this.playerName, realName: this.trueName })
         .then(res => {
-          this.players = res.data.players
-          this.gameName = res.data.params.gameName
+          //this.players = res.data.players
+          this.gameName = res.data.gameName
+          console.log(this.gameName)
+          this.openSocket()
         })
     },
     /* Подтверждаем данные из формы и вызываем initLobby */
@@ -72,6 +73,19 @@ export default {
         return true
       }
       return false
+    },
+
+    // method opens socket connection
+    // client socket will join to the game room with room id ( room.id == doc.id )
+    // while joinig socket also sends player name and lobby id 
+    // Room id is the lobby id
+    openSocket() {
+      const socket = io('http://localhost:3000')
+      socket.emit('join room', this.playerName, this.$route.params.id)
+      socket.on('new data', data => {
+      console.log(data)
+      this.players = data.currentPlayers
+      })
     }
   }
 }
