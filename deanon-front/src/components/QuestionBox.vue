@@ -17,7 +17,7 @@ export default {
   },
   methods: {
     addQuestion () {
-      // ..... отправляем на бек
+      this.$emit('addQuestion', this.question)
     }
   }
 }

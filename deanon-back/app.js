@@ -72,22 +72,69 @@ app.post('/create', function (req, res) {
     })
 })
 
+// load player by token
+
+app.post('/loadPlayer', function (req, res) {
+  if (req.body.token && req.body.token !== 'undefined') {
+    db.collection('games').doc(req.body.id)
+      .get().then(doc => {
+        if (doc.data().currentPlayers.hasOwnProperty(req.body.token)) {
+          const playerNick = doc.data().currentPlayers[req.body.token].nickname
+          const playerRealName = doc.data().realNames[doc.data().currentPlayers[req.body.token].nickname]
+          res.send({ nickName: playerNick,
+            realName: playerRealName })
+        } else {
+          res.send({ error: 'Player is not exists' })
+        }
+      })
+  }
+})
 // connect to lobby
 
 app.post('/connect', function (req, res) {
-  db.collection('games').doc(req.body.id)
-    .update({
-      currentPlayers: Firebase.firestore.FieldValue.arrayUnion(req.body.name)
-    })
+  if (!req.body.token || req.body.token === 'undefined') {
+    console.log(req.body.token)
+    const playerUpdate = {}
+    const newToken = randomID(req.body.name)
+    playerUpdate['currentPlayers.' + newToken] = {
+      nickName: req.body.name,
+      realName: req.body.realName,
+      isAsked: false
+    }
+    db.collection('games').doc(req.body.id)
+      .update(playerUpdate)
     // Реализуем добавление реального имени в объект realNames, чтобы потом угадывать
-  const realNameUpd = {}
-  realNameUpd['realNames.' + req.body.name] = req.body.realName
-  db.collection('games').doc(req.body.id)
-    .update(realNameUpd)
-  // Сформировать дату из дока с необходимой инфой, кинуть на бек
+    const realNameUpd = {}
+    realNameUpd['realNames.' + req.body.name] = req.body.realName
+    db.collection('games').doc(req.body.id)
+      .update(realNameUpd)
+
+    // sending lobby info
+    db.collection('games').doc(req.body.id)
+      .get().then(doc => {
+        let playersArr = []
+        const docObj = doc.data().currentPlayers
+        for (const key in docObj) {
+          if (docObj.hasOwnProperty(key)) {
+            const element = docObj[key].nickName
+            playersArr.push(element)
+          }
+        }
+        res.send({ token: newToken, players: playersArr, gameName: doc.data().params.gameName })
+      })
+  }
+  
   db.collection('games').doc(req.body.id)
     .get().then(doc => {
-      res.send({ players: doc.data().currentPlayers, gameName: doc.data().params.gameName })
+      let playersArr = []
+      const docObj = doc.data().currentPlayers
+      for (const key in docObj) {
+        if (docObj.hasOwnProperty(key)) {
+          const element = docObj[key].nickName
+          playersArr.push(element)
+        }
+      }
+      res.send({ players: playersArr, gameName: doc.data().params.gameName })
     })
 })
 
