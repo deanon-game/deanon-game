@@ -39,7 +39,7 @@ export default {
       playerName: null,
       trueName: null,
       gameName: null,
-      players: null,
+      players: [],
       error: null,
       noErrors: false
     }
@@ -60,7 +60,7 @@ export default {
           this.noErrors = false
         } else {
         this.playerName = res.data.nickName
-        this.realName = res.data.realName
+        this.trueName = res.data.realName
         this.noErrors = true
         this.isFormActive = false
         this.initLobby()
@@ -94,14 +94,14 @@ export default {
 
     // method opens socket connection
     // client socket will join to the game room with room id ( room.id == doc.id )
-    // while joinig socket also sends player name and lobby id 
+    // while joinig socket also sends player name and lobby id
     // Room id is the lobby id
     openSocket () {
       const socket = io('http://localhost:3000')
       socket.emit('join room', this.playerName, this.$route.params.id)
       socket.on('new data', data => {
       console.log(data)
-      this.players = data.currentPlayers
+      this.players = data
       })
     },
     addQuestion(question) {

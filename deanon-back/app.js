@@ -24,7 +24,14 @@ io.on('connection', (socket) => {
     socket.join(room)
     console.log(nick + ' joined to: ' + room)
     db.collection('games').doc(room).onSnapshot(doc => {
-      io.sockets.in(room).emit('new data', doc.data())
+      let players = []
+      for (const key in doc.data().currentPlayers) {
+        if (doc.data().currentPlayers.hasOwnProperty(key)) {
+          const element = doc.data().currentPlayers[key].nickName
+          players.push(element)
+        }
+      }
+      io.sockets.in(room).emit('new data', players)
     })
   })
 })
@@ -79,8 +86,10 @@ app.post('/loadPlayer', function (req, res) {
     db.collection('games').doc(req.body.id)
       .get().then(doc => {
         if (doc.data().currentPlayers.hasOwnProperty(req.body.token)) {
-          const playerNick = doc.data().currentPlayers[req.body.token].nickname
-          const playerRealName = doc.data().realNames[doc.data().currentPlayers[req.body.token].nickname]
+          const playerNick = doc.data().currentPlayers[req.body.token].nickName
+          console.log(playerNick)
+          const playerRealName = doc.data().realNames[playerNick]
+          console.log(playerRealName)
           res.send({ nickName: playerNick,
             realName: playerRealName })
         } else {
