@@ -3,7 +3,9 @@ node_js:
   - "10.16.0"
 cache: yarn
 install:
-  - yarn update
+  - yarn
+  - cd front && yarn
+  - cd ../back && yarn && cd ..
 branches:
   except:
     - gh-pages
