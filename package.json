@@ -8,11 +8,11 @@
     "build-front": "cd front && yarn build",
     "lint-back": "cd back && yarn lint",
     "lint-front": "cd front && yarn lint",
-    "lint": "concurrently \"yarn lint-back\" \"yarn lint-front\"",
+    "lint": "concurrently --kill-others-on-fail \"yarn lint-back\" \"yarn lint-front\"",
     "lint-back:fix": "cd back && yarn lint:fix",
     "lint-front:fix": "cd front && yarn lint:fix",
     "lint:fix": "concurrently -n w: \"yarn:lint-*:fix\"",
-    "dev": "yarn start-back & yarn start-front",
+    "dev": "concurrently --kill-others yarn:start-*",
     "install": "concurrently \"cd front && yarn\" \"cd back && yarn\""
   },
   "devDependencies": {
