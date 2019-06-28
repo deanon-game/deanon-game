@@ -1,0 +1,15 @@
+language: node_js
+node_js:
+  - "10.16.0"
+install:
+  - yarn install
+branches:
+  except:
+    - gh-pages
+stages:
+  - lint
+jobs:
+  include:
+    - stage: lint
+      script:
+        - yarn lint
