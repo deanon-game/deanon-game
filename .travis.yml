@@ -1,6 +1,11 @@
 language: node_js
 node_js:
   - "10.16.0"
+cache:
+directories:
+  - /home/travis/.rvm/node_modules
+  - /home/travis/.rvm/front/node_modules
+  - /home/travis/.rvm/back/node_modules
 install:
   - yarn update
 branches:
