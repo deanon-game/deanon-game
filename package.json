@@ -13,7 +13,7 @@
     "lint-front:fix": "cd front && yarn lint:fix",
     "lint:fix": "concurrently -n w: \"yarn:lint-*:fix\"",
     "dev": "yarn start-back & yarn start-front",
-    "i": "concurrently \"yarn\" \"cd front && yarn\" \"cd back && yarn\""
+    "install": "concurrently \"cd front && yarn\" \"cd back && yarn\""
   },
   "devDependencies": {
     "concurrently": "^4.1.1"
