@@ -4,14 +4,9 @@
 ```
 > npm i yarn -g
 ```
-## install backend dependencies
+## install fronted & backend dependencies
 ```
-> yarn
-```
-## install fronted dependencies
-```
-> cd deanon-front 
-deanon-front> yarn
+> yarn i
 ```
 ## up backend && front
 ```

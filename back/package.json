@@ -1,17 +1,10 @@
 {
-  "name": "deanon-game",
+  "name": "deanon-back",
   "version": "0.1.0",
-  "private": true,
   "scripts": {
-    "start-back": "node ./deanon-back/app.js",
-    "start-front": "cd deanon-front && yarn serve",
-    "lint-back": "eslint deanon-back/**/*.js",
-    "lint-front": "cd deanon-front && yarn lint",
-    "lint": "concurrently \"yarn lint-back\" \"yarn lint-front\"",
-    "lint-back:fix": "eslint deanon-back/**/*.js --fix",
-    "lint-front:fix": "cd deanon-front && yarn lint:fix",
-    "lint:fix": "concurrently -n w: \"yarn:lint-*:fix\"",
-    "dev": "concurrently --kill-others \"yarn start-back\" \"yarn start-front\""
+    "start": "node ./app.js",
+    "lint": "eslint ./**/*.js",
+    "lint:fix": "eslint ./**/*.js --fix"
   },
   "dependencies": {
     "express": "~4.16.1",
@@ -19,8 +12,6 @@
     "firestore": "^1.1.6"
   },
   "devDependencies": {
-    "@vue/eslint-config-standard": "^4.0.0",
-    "concurrently": "^4.1.0",
     "eslint": "^5.16.0",
     "eslint-config-standard": "^12.0.0",
     "eslint-plugin-import": "^2.17.3",
