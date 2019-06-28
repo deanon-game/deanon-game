@@ -6,7 +6,7 @@
 ```
 ## install fronted & backend dependencies
 ```
-> yarn install
+> yarn update
 ```
 ## up backend && front
 ```
