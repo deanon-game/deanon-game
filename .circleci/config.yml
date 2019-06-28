@@ -14,19 +14,19 @@ jobs:
 
     steps:
       - checkout
-      # - restore_cache:
-      #     keys:
-      #       - v1-dependencies-{{ checksum "package.json" }}
-      #       - v1-dependencies-
+      - restore_cache:
+          keys:
+            - dependencies-{{ checksum "package.json" }}
+            - dependencies-
 
       - run: yarn install
 
-      # - save_cache:
-      #     paths:
-      #       - node_modules
-      #       - front/node_modules
-      #       - back/node_modules
-      #     key: v1-dependencies-{{ checksum "package.json" }}
+      - save_cache:
+          paths:
+            - node_modules
+            - front/node_modules
+            - back/node_modules
+          key: dependencies-{{ checksum "package.json" }}
 
       - run: yarn lint
       - run: yarn build-front
