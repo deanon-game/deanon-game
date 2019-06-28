@@ -28,5 +28,6 @@ jobs:
             - back/node_modules
           key: v1-dependencies-{{ checksum "package.json" }}
 
+      - run: ls
       - run: yarn lint
       - run: yarn build-front
