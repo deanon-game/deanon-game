@@ -8,11 +8,14 @@
     "build-front": "cd front && yarn build",
     "lint-back": "cd back && yarn lint",
     "lint-front": "cd front && yarn lint",
-    "lint": "yarn lint-back & yarn lint-front",
+    "lint": "concurrently \"yarn lint-back\" \"yarn lint-front\"",
     "lint-back:fix": "cd back && yarn lint:fix",
     "lint-front:fix": "cd front && yarn lint:fix",
-    "lint:fix": "yarn lint-back:fix & yarn lint-front:fix",
+    "lint:fix": "concurrently -n w: \"yarn:lint-*:fix\"",
     "dev": "yarn start-back & yarn start-front",
-    "i": "cd front && yarn & cd .. & cd back && yarn"
+    "i": "concurrently \"cd front && yarn\" \"cd back && yarn\""
+  },
+  "devDependencies": {
+    "concurrently": "^4.1.1"
   }
 }
