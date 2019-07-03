@@ -1,3 +1,4 @@
+const PORT = 8000
 const express = require('express')
 const db = require('./database.js')
 const Firebase = require('firebase')
@@ -64,6 +65,6 @@ app.post('/connect', function (req, res) {
     })
 })
 
-app.listen(3000, function () {
+app.listen(PORT, function () {
   console.log('шото работает')
 })
