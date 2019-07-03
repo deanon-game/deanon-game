@@ -4,40 +4,29 @@
       Ваш псевдоним в игре
       <v-text-field type="text" placeholder="Не заполняйте чтоб получить случайный никнэйм" v-model="gameSettings.nickname"/>
     </label>
+    <label class="settings__label">
+      Ваш псевдоним в игре
+      <v-text-field type="text" placeholder="Не заполняйте чтоб получить случайный никнэйм" v-model="gameSettings.nickname"/>
+    </label>
     <v-btn @click="joinGame">Присоединиться</v-btn>
-    <v-snackbar
-      v-model="isNeedToShowErrors"
-      color="error"
-      :timeout="2000"
-      multi-line
-    >
-      <template v-for="error in errorList">
-        {{error}}
-      </template>
-    </v-snackbar>
+    <ErrorMassage :errorList="errorList"/>
   </div>
 </template>
 
 <script>
 import axios from 'axios'
+import ErrorMassage from '@/components/ErrorMessage.vue'
 
 export default {
+  components: {
+    ErrorMassage
+  },
   data () {
     return {
       gameSettings: {
         nickname: ''
       },
       errorList: []
-    }
-  },
-  computed: {
-    isNeedToShowErrors: {
-      set (value) {
-        this.errorList = value ? this.errorList : []
-      },
-      get () {
-        return !!this.errorList.length
-      }
     }
   },
   methods: {

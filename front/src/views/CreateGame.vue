@@ -22,23 +22,18 @@
     </label>
     <v-btn @click="createGame">Создать</v-btn>
 
-    <v-snackbar
-      v-model="isNeedToShowErrors"
-      color="error"
-      :timeout="2000"
-      multi-line
-    >
-      <template v-for="error in errorList">
-        {{error}}
-      </template>
-    </v-snackbar>
+    <ErrorMassage :errorList="errorList"/>
   </div>
 </template>
 
 <script>
 import axios from 'axios'
+import ErrorMassage from '@/components/ErrorMessage.vue'
 
 export default {
+  components: {
+    ErrorMassage
+  },
   data () {
     return {
       gameSettings: {
@@ -51,21 +46,10 @@ export default {
       errorList: []
     }
   },
-  computed: {
-    isNeedToShowErrors: {
-      set (value) {
-        this.errorList = value ? this.errorList : []
-      },
-      get () {
-        return !!this.errorList.length
-      }
-    }
-  },
   methods: {
     createGame () {
       axios.post(`${this.$store.getters.getAPI_URL}create`, this.gameSettings)
         .then((response) => {
-          console.log(response)
           if (!response.data.id) {
             this.errorList.push('Не было получено id игры :(')
           } else {
