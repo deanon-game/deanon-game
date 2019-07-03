@@ -2,25 +2,36 @@
   <div class="settings">
     <label class="settings__label">
       Название игры
-      <input type="text" placeholder="Случайное название" v-model="gameSettings.gameName">
+      <v-text-field type="text" placeholder="Случайное название" v-model="gameSettings.gameName"/>
     </label>
     <label class="settings__label">
       Количество попыток для угадывания каждому игроку
-      <input type="number" v-model="gameSettings.tryCount">
+      <v-text-field type="number" v-model="gameSettings.tryCount"/>
     </label>
     <label class="settings__label">
       Дополнительные правила для ваших игроков
-      <textarea v-model="gameSettings.additionalRules" disabled/>
+      <v-textarea v-model="gameSettings.additionalRules" disabled/>
     </label>
     <label class="settings__label">
        Пожелания игрокам перед игрой
-      <textarea v-model="gameSettings.additionalWishes" disabled/>
+      <v-textarea v-model="gameSettings.additionalWishes" disabled/>
     </label>
     <label class="settings__label">
        Поздравление победителя
-      <textarea v-model="gameSettings.winnerCongratulateMsg" disabled/>
+      <v-textarea v-model="gameSettings.winnerCongratulateMsg" disabled/>
     </label>
-    <button @click="createGame()">Создать</button>
+    <v-btn @click="createGame">Создать</v-btn>
+
+    <v-snackbar
+      v-model="isNeedToShowErrors"
+      color="error"
+      :timeout="2000"
+      multi-line
+    >
+      <template v-for="error in errorList">
+        {{error}}
+      </template>
+    </v-snackbar>
   </div>
 </template>
 
@@ -36,30 +47,37 @@ export default {
         additionalRules: '',
         additionalWishes: 'Игра началась!',
         winnerCongratulateMsg: 'Поздравляем победителя!'
+      },
+      errorList: []
+    }
+  },
+  computed: {
+    isNeedToShowErrors: {
+      set (value) {
+        this.errorList = value ? this.errorList : []
+      },
+      get () {
+        return !!this.errorList.length
       }
     }
   },
   methods: {
     createGame () {
-      axios.post('http://localhost:3000/create', this.gameSettings)
-        .then(() => {
-          this.$router.push('/lobby' /* + lobby id  */)
+      axios.post(`${this.$store.getters.getAPI_URL}create`, this.gameSettings)
+        .then((response) => {
+          console.log(response)
+          if (!response.data.id) {
+            this.errorList.push('Не было получено id игры :(')
+          } else {
+            const gameId = response.data.id
+            this.$router.push({ name: 'join', params: { id: gameId } })
+          }
         })
-        .catch((e) => console.log(e))
+        .catch((e) => {
+          this.errorList = []
+          this.errorList.push(e)
+        })
     }
   }
 }
 </script>
-
-<style scoped>
-.settings {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-}
-.settings__label {
-  display: flex;
-  flex-direction: column;
-  padding: 10px 0;
-}
-</style>
