@@ -1,23 +1,18 @@
 language: node_js
 node_js:
   - "10.16.0"
+cache: yarn
 install:
   - yarn
-  - cd deanon-front
-  - yarn
-  - cd ..
+  - cd front && yarn
+  - cd ../back && yarn && cd ..
 branches:
   except:
     - gh-pages
 stages:
-  - lint-front
-  - lint-back
+  - lint
 jobs:
   include:
-    - stage: lint-front
-      script:
-        - cd deanon-front
-        - yarn lint
-    - stage: lint-back
+    - stage: lint
       script:
         - yarn lint

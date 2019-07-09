@@ -1,5 +1,6 @@
 
 // Firebase init
+const PORT = 8000
 const db = require('./database.js')
 const Firebase = require('firebase')
 const randomID = require('./utills/randomID.js')
@@ -147,6 +148,7 @@ app.post('/connect', function (req, res) {
     })
 })
 
-http.listen(3000, function () {
+
+http.listen(PORT, function () {
   console.log('шото работает')
 })

@@ -8,19 +8,24 @@ export default new Router({
   base: process.env.BASE_URL,
   routes: [
     {
+      path: '/',
+      name: 'main',
+      component: () => import(/* webpackChunkName: "MainPage" */ './views/MainPage.vue')
+    },
+    {
       path: '/create',
       name: 'create',
       component: () => import(/* webpackChunkName: "CreateGame" */ './views/CreateGame.vue')
     },
     {
-      path: '/join',
+      path: '/join/:id',
       name: 'join',
       component: () => import(/* webpackChunkName: "JoinGame" */ './views/JoinGame.vue')
     },
     {
       path: '/lobby/:id',
       name: 'lobby',
-      component: () => import('./views/GamePreRoom.vue')
+      component: () => import(/* webpackChunkName: "Lobby" */ './views/GameLobby.vue')
     }
   ]
 })

@@ -3,14 +3,16 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "start-back": "node ./deanon-back/app.js",
-    "start-front": "cd deanon-front && yarn serve",
-    "lint-back": "eslint deanon-back/**/*.js",
-    "lint-front": "cd deanon-front && yarn lint",
-    "lint": "concurrently \"yarn lint-back\" \"yarn lint-front\"",
-    "lint-back:fix": "eslint deanon-back/**/*.js --fix",
-    "lint-front:fix": "cd deanon-front && yarn lint:fix",
+    "start-back": "node ./back/app.js",
+    "start-front": "cd front && yarn serve",
+    "build-front": "cd front && yarn build",
+    "lint-back": "cd back && yarn lint",
+    "lint-front": "cd front && yarn lint",
+    "lint": "concurrently --kill-others-on-fail \"yarn lint-back\" \"yarn lint-front\"",
+    "lint-back:fix": "cd back && yarn lint:fix",
+    "lint-front:fix": "cd front && yarn lint:fix",
     "lint:fix": "concurrently -n w: \"yarn:lint-*:fix\"",
+<<<<<<< HEAD
     "dev": "concurrently --kill-others \"yarn start-back\" \"yarn start-front\""
   },
   "dependencies": {
@@ -18,14 +20,12 @@
     "firebase": "^6.1.1",
     "firestore": "^1.1.6",
     "socket.io": "^2.2.0"
+=======
+    "dev": "concurrently --kill-others yarn:start-*",
+    "update": "yarn & concurrently \"cd front && yarn\" \"cd back && yarn\""
+>>>>>>> 773c7978f4e4999c480bf561872f69b72c093b78
   },
   "devDependencies": {
-    "concurrently": "^4.1.0",
-    "eslint": "^5.16.0",
-    "eslint-config-standard": "^12.0.0",
-    "eslint-plugin-import": "^2.17.3",
-    "eslint-plugin-node": "^9.1.0",
-    "eslint-plugin-promise": "^4.1.1",
-    "eslint-plugin-standard": "^4.0.0"
+    "concurrently": "^4.1.1"
   }
 }
