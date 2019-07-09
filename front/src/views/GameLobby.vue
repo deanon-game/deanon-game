@@ -6,6 +6,7 @@
 
 <script>
 import axios from 'axios'
+import io from 'socket.io-client'
 
 export default {
   data () {
@@ -14,9 +15,11 @@ export default {
     }
   },
   created () {
-    this.getGameInfo().then((gameInfo) => {
-      this.gameInfo = gameInfo
-    })
+   const socket = io('http://localhost:8000')
+   socket.emit('join room', 'Pitoshka', 'eNwGmea1561096180238')
+   socket.on('new data', doc => {
+     console.log(doc)
+   })
   },
   methods: {
     getGameInfo () {

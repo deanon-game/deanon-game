@@ -12,18 +12,8 @@
     "lint-back:fix": "cd back && yarn lint:fix",
     "lint-front:fix": "cd front && yarn lint:fix",
     "lint:fix": "concurrently -n w: \"yarn:lint-*:fix\"",
-<<<<<<< HEAD
-    "dev": "concurrently --kill-others \"yarn start-back\" \"yarn start-front\""
-  },
-  "dependencies": {
-    "express": "~4.16.1",
-    "firebase": "^6.1.1",
-    "firestore": "^1.1.6",
-    "socket.io": "^2.2.0"
-=======
     "dev": "concurrently --kill-others yarn:start-*",
     "update": "yarn & concurrently \"cd front && yarn\" \"cd back && yarn\""
->>>>>>> 773c7978f4e4999c480bf561872f69b72c093b78
   },
   "devDependencies": {
     "concurrently": "^4.1.1"
