@@ -20,7 +20,7 @@
        Поздравление победителя
       <v-textarea v-model="gameSettings.winnerCongratulateMsg" disabled/>
     </label>
-    <v-btn @click="createGame">Создать</v-btn>
+    <v-btn class="create-btn" @click="createGame">Создать</v-btn>
 
     <ErrorMassage :errorList="errorList"/>
   </div>

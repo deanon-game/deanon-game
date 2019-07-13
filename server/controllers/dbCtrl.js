@@ -27,7 +27,8 @@ exports.connectToGame = function (req, res) {
     playerUpdate['currentPlayers.' + newToken] = {
       nickName: req.body.nickName,
       realName: req.body.realName,
-      isAsked: false
+      isAsked: false,
+      isReady: false
     }
     fireDB.db.collection('games').doc(req.body.id)
       .update(playerUpdate)
@@ -50,7 +51,8 @@ exports.connectToGame = function (req, res) {
         playerUpdate['currentPlayers.' + req.body.token] = {
           nickName: req.body.nickName,
           realName: req.body.realName,
-          isAsked: false
+          isAsked: false,
+          isReady: false
         }
         const realNameUpd = {}
         realNameUpd['realNames.' + req.body.nickName] = req.body.realName
@@ -70,13 +72,8 @@ exports.loadPlayer = function (req, res) {
   if (req.body.token && req.body.token !== 'undefined') {
     fireDB.db.collection('games').doc(req.body.id)
       .get().then(doc => {
-        if (doc.data().currentPlayers.hasOwnProperty(req.body.token)) {
-          const playerNick = doc.data().currentPlayers[req.body.token].nickName
-          console.log(playerNick)
-          const playerRealName = doc.data().realNames[playerNick]
-          console.log(playerRealName)
-          return res.send({ nickName: playerNick,
-            realName: playerRealName })
+        if (req.body.token in doc.data().currentPlayers) {
+          return res.send({ gameInfo: doc.data().params })
         } else {
           res.send({ error: 'Player is not exists' })
         }
@@ -84,9 +81,22 @@ exports.loadPlayer = function (req, res) {
   }
 }
 
-exports.onUpdate = function (room, io) {
-  fireDB.db.collection('games').doc(room)
-    .onSnapshot(doc => {
+exports.signUpdate = function (room, io) {
+  fireDB.db.collection('games').doc(room).get()
+    .then(doc => {
+      fireDB.db.collection('games').doc(room)
+        .onSnapshot(doc => {
+          io.sockets.in(room).emit('new data', doc.data())
+        })
       io.sockets.in(room).emit('new data', doc.data())
     })
+}
+
+exports.checkToken = function (token, id) {
+  return new Promise((resolve) => {
+    fireDB.db.collection('games').doc(id)
+      .get().then(doc => {
+        resolve(token in doc.data().currentPlayers)
+      })
+  })
 }
