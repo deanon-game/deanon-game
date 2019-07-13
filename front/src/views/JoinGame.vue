@@ -33,10 +33,10 @@ export default {
   methods: {
     joinGame () {
       axios.post(`${this.$store.getters.getAPI_URL}games/connect`, { nickName: this.gameSettings.nickName,
-                                                               realName: this.gameSettings.realName,
-                                                               token: localStorage.token,
-                                                               id: this.$route.params.id
-                                                               })
+        realName: this.gameSettings.realName,
+        token: localStorage.token,
+        id: this.$route.params.id
+      })
         .then((response) => {
           const token = response.data.token
           if (!token) {

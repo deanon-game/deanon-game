@@ -1,10 +1,4 @@
 const express = require('express')
-// routes
-
-
-// controllers
-const dbCtrl = require('./controllers/dbCtrl')
-
 
 const app = express()
 const server = require('http').createServer(app)
@@ -24,7 +18,6 @@ app.use(function (req, res, next) {
 // routes
 const gameRoutes = require('./routes/games')
 app.use('/api/v1/games', gameRoutes)
-
 
 server.listen('8000', function () {
   console.log('it works!')
