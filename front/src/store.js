@@ -5,7 +5,7 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    API_URL: `http://localhost:8000/`
+    API_URL: `http://localhost:8000/api/v1/`
   },
   getters: {
     getAPI_URL (state) {

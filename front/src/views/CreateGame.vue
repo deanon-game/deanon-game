@@ -48,10 +48,10 @@ export default {
   },
   methods: {
     createGame () {
-      axios.post(`${this.$store.getters.getAPI_URL}create`, this.gameSettings)
+      axios.post(`${this.$store.getters.getAPI_URL}games/create`, this.gameSettings)
         .then((response) => {
           if (!response.data.id) {
-            this.errorList.push('Не было получено id игры :(')
+            this.errorList.push('Не было получено id игры')
           } else {
             const gameId = response.data.id
             this.$router.push({ name: 'join', params: { id: gameId } })

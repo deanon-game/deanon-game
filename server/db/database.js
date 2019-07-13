@@ -3,6 +3,7 @@ const firebase = require('firebase')
 require('firebase/firestore')
 
 firebase.initializeApp(config)
-var db = firebase.firestore()
+const db = firebase.firestore()
 
-module.exports = db
+exports.firebase = firebase
+exports.db = db
