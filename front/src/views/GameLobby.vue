@@ -1,6 +1,6 @@
 <template>
   <div>
-    ТУТ инфа о лобби
+  Название игры: {{gameInfo.gameName}}
   </div>
 </template>
 
@@ -15,11 +15,11 @@ export default {
     }
   },
   created () {
-   const socket = io('http://localhost:8000')
-   socket.emit('join room', 'Pitoshka', 'eNwGmea1561096180238')
-   socket.on('new data', doc => {
-     console.log(doc)
-   })
+  //  const socket = io('http://localhost:8000')
+  //  socket.emit('join room', 'Pitoshka', 'eNwGmea1561096180238')
+  //  socket.on('new data', doc => {
+  //    console.log(doc)
+  //  })
   },
   methods: {
     getGameInfo () {

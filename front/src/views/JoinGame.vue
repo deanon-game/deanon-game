@@ -2,11 +2,11 @@
   <div>
     <label class="settings__label">
       Ваш псевдоним в игре
-      <v-text-field type="text" placeholder="Не заполняйте чтоб получить случайный никнэйм" v-model="gameSettings.nickname"/>
+      <v-text-field type="text" placeholder="Не заполняйте чтоб получить случайный никнэйм" v-model="gameSettings.nickName"/>
     </label>
     <label class="settings__label">
-      Ваш псевдоним в игре
-      <v-text-field type="text" placeholder="Не заполняйте чтоб получить случайный никнэйм" v-model="gameSettings.nickname"/>
+      Настоящее имя
+      <v-text-field type="text" placeholder="Не заполняйте чтоб получить случайный никнэйм" v-model="gameSettings.realName"/>
     </label>
     <v-btn @click="joinGame">Присоединиться</v-btn>
     <ErrorMassage :errorList="errorList"/>
@@ -24,14 +24,19 @@ export default {
   data () {
     return {
       gameSettings: {
-        nickname: ''
+        nickName: '',
+        realName: ''
       },
       errorList: []
     }
   },
   methods: {
     joinGame () {
-      axios.post(`${this.$store.getters.getAPI_URL}join`, this.gameSettings)
+      axios.post(`${this.$store.getters.getAPI_URL}games/connect`, { nickName: this.gameSettings.nickName,
+                                                               realName: this.gameSettings.realName,
+                                                               token: localStorage.token,
+                                                               id: this.$route.params.id
+                                                               })
         .then((response) => {
           const token = response.data.token
           if (!token) {
