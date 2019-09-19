@@ -2,8 +2,8 @@ module.exports = {
   devServer: {
     hot: true, // https://webpack.js.org/configuration/dev-server/#devserverhot
     proxy: {
-      '/p2p/': {
-        target: 'http://localhost:8000/api/',
+      '/api/p2p/': {
+        target: 'http://localhost:9000/api/p2p/',
         ws: true,
         changeOrigin: true
       }
