@@ -29,9 +29,12 @@ export default {
       errorList: []
     }
   },
+  created () {
+    this.joinGame()
+  },
   methods: {
     joinGame () {
-      this.$store.dispatch('client/connect', $route.)
+      this.$store.dispatch('client/connect', this.$route.path)
     }
   }
 }

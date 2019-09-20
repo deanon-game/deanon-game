@@ -3,15 +3,17 @@ const ExpressPeerServer = require('peer').ExpressPeerServer
 
 const app = express()
 
-app.get('/', function (req, res, next) { res.send('HW') })
-
-const server = app.listen(9000)
-
 const options = {
-  debug: true,
-  allow_discovery: true
+  debug: true
 }
 
-app.use('/api/p2p/', ExpressPeerServer(server, options))
+app.get('/', function (req, res, next) { res.send('HW') })
+
+const server = require('http').createServer(app)
+const peerserver = ExpressPeerServer(server, options)
+
+app.use('/api/p2p/', peerserver)
+
+server.listen(9000)
 
 console.log('waiting for requests')

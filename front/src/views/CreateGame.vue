@@ -45,6 +45,9 @@ export default {
       errorList: []
     }
   },
+  created () {
+    this.createGame()
+  },
   methods: {
     createGame () {
       this.$store.dispatch('server/create')
