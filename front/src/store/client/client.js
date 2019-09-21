@@ -1,24 +1,37 @@
 import Peer from 'peerjs'
+import p2pConfig from '../p2p.config'
 
 export default {
   namespaced: true,
-  state: {},
-  mutations: {},
-  getters: {},
+  state: {
+    connection: {}
+  },
+  mutations: {
+    connection (state, connection) {
+      state.connection = connection
+    }
+  },
+  getters: {
+    connection (state) {
+      return state.connection
+    }
+  },
   actions: {
     connect (state, gameId) {
-      const peer = new Peer('sender', { host: '/', debug: 3, port: 9000, path: '/api/p2p/' })
+      const peer = new Peer('sender', p2pConfig)
 
       console.log('client created', peer)
-      const conn = peer.connect('receiver')
+      state.commit('connection', peer.connect('receiver'))
 
-      conn.on('open', () => {
-        conn.on('data', function (data) {
-          console.log('Получено:', data)
+      state.getters.connection.on('open', () => {
+        state.getters.connection.on('data', function (data) {
+          console.log('get:', data)
         })
-        conn.send('ПРИВЕТ!!!!')
-        conn.send('ПРИВЕТ!!!!')
       })
+    },
+    send (state, payload) {
+      console.log('send', payload)
+      state.getters.connection.send('hi')
     }
   }
 }

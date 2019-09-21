@@ -1,4 +1,5 @@
 import Peer from 'peerjs'
+import p2pConfig from '../p2p.config'
 
 export default {
   namespaced: true,
@@ -20,16 +21,16 @@ export default {
   },
   actions: {
     create (state) {
-      const peer = new Peer('receiver', { host: '/', debug: 0, port: 9000, path: '/api/p2p/' })
-
+      const peer = new Peer('receiver', p2pConfig)
       console.log('server created', peer)
 
       peer.on('open', function (id) {
         console.log('My peer ID is: ' + id)
       })
       peer.on('connection', function (conn) {
-        conn.on('data', (data) => {
-          console.log('Сервер получил сообщение: ', data)
+        conn.on('data', function (data) {
+          // Will print 'hi!'
+          console.log(data)
         })
       })
 
