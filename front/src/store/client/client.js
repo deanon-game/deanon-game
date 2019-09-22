@@ -18,7 +18,7 @@ export default {
   },
   actions: {
     connect (state, gameId) {
-      const peer = new Peer('sender', p2pConfig)
+      const peer = new Peer(null, p2pConfig)
 
       console.log('client created', peer)
       state.commit('connection', peer.connect('receiver'))
