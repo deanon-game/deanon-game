@@ -27,6 +27,8 @@ export default {
         state.getters.connection.on('data', function (data) {
           console.log('get:', data)
         })
+        console.log('before dispatch')
+        state.dispatch('send')
       })
     },
     send (state, payload) {
