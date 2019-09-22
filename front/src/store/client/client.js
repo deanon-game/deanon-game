@@ -37,7 +37,7 @@ export default {
     },
     send (state, payload) {
       console.log('send', payload)
-      state.getters.connection.send('hi')
+      state.getters.connection.send(payload)
     }
   }
 }

@@ -1,5 +1,6 @@
 import Peer from 'peerjs'
 import p2pConfig from '../p2p.config'
+import recognizer from '@/helpers/recognizer/index'
 
 export default {
   namespaced: true,
@@ -35,8 +36,11 @@ export default {
             console.log('server created with id', id)
           })
           peer.on('connection', function (conn) {
-            conn.on('data', function (data) {
-              console.log(data)
+            conn.on('data', (data) => {
+              recognizer.resolve({
+                data,
+                connection: conn
+              })
             })
           })
           state.commit('peer', peer)
