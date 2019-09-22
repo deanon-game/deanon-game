@@ -8,7 +8,7 @@
       Настоящее имя
       <v-text-field type="text" placeholder="Не заполняйте чтоб получить случайный никнэйм" v-model="gameSettings.realName"/>
     </label>
-    <v-btn @click="$store.dispatch('client/send', 0)">Присоединиться</v-btn>
+    <v-btn @click="onJoin">Присоединиться</v-btn>
     <ErrorMassage :errorList="errorList"/>
   </div>
 </template>
@@ -35,6 +35,12 @@ export default {
   methods: {
     joinGame () {
       this.$store.dispatch('client/connect', this.$route.params.id)
+    },
+    onJoin () {
+      this.$store.dispatch('client/send', {
+        type: 'chat',
+        message: 'hello :)'
+      })
     }
   }
 }
