@@ -1,5 +1,11 @@
 <template>
   <div class="settings">
+    <div v-if="gameUrl">
+      Ваша игра будет доступна по адресу <a :href="gameUrl" target="_blank">{{gameUrl}}</a>
+    </div>
+    <div v-else>
+      Генерация ссылки...
+    </div>
     <label class="settings__label">
       Название игры
       <v-text-field type="text" placeholder="Случайное название" v-model="gameSettings.gameName"/>
@@ -28,6 +34,7 @@
 
 <script>
 import ErrorMassage from '@/components/ErrorMessage.vue'
+import { mapGetters } from 'vuex'
 
 export default {
   components: {
@@ -45,12 +52,32 @@ export default {
       errorList: []
     }
   },
+  computed: {
+    ...mapGetters({
+      serverId: 'server/peerId'
+    }),
+    gameUrl () {
+      if (this.serverId) {
+        return `${window.location.origin}/join/${this.serverId}`
+      } else {
+        return false
+      }
+    }
+  },
   created () {
     this.createGame()
   },
   methods: {
     createGame () {
-      this.$store.dispatch('server/create')
+      this.$store.dispatch('server/create', this.$route.params.hostId || null).then((newHostId) => {
+        console.log('newHostId', newHostId)
+        this.$router.push({
+          ...this.$route,
+          query: {
+            hostId: newHostId
+          }
+        })
+      })
     }
   }
 }
