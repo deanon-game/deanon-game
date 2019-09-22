@@ -69,7 +69,7 @@ export default {
   },
   methods: {
     createGame () {
-      this.$store.dispatch('server/create', this.$route.params.hostId || null).then((newHostId) => {
+      this.$store.dispatch('server/create', this.$route.query.hostId || null).then((newHostId) => {
         console.log('newHostId', newHostId)
         this.$router.push({
           ...this.$route,
