@@ -17,18 +17,22 @@ export default {
     }
   },
   actions: {
-    connect (state, gameId) {
-      const peer = new Peer(null, p2pConfig)
+    connect (state, serverId, peerId = null) {
+      return new Promise((resolve, reject) => {
+        try {
+          const peer = new Peer(peerId, p2pConfig)
 
-      console.log('client created', peer)
-      state.commit('connection', peer.connect('receiver'))
+          state.commit('connection', peer.connect(serverId))
 
-      state.getters.connection.on('open', () => {
-        state.getters.connection.on('data', function (data) {
-          console.log('get:', data)
-        })
-        console.log('before dispatch')
-        state.dispatch('send')
+          state.getters.connection.on('open', () => {
+            state.getters.connection.on('data', function (data) {
+              console.log('get:', data)
+            })
+            resolve()
+          })
+        } catch (err) {
+          reject(err)
+        }
       })
     },
     send (state, payload) {

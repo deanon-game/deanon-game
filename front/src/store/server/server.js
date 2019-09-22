@@ -4,11 +4,15 @@ import p2pConfig from '../p2p.config'
 export default {
   namespaced: true,
   state: {
-    peer: {}
+    peer: {},
+    peerId: null
   },
   mutations: {
     peer (state, value) {
       state.peer = value
+    },
+    peerId (state, value) {
+      state.peerId = value
     }
   },
   getters: {
@@ -16,25 +20,30 @@ export default {
       return state.peer
     },
     peerId (state) {
-      return state.peer.id
+      return state.peerId
     }
   },
   actions: {
-    create (state) {
-      const peer = new Peer('receiver', p2pConfig)
-      console.log('server created', peer)
+    create (state, serverId = null) {
+      return new Promise((resolve, reject) => {
+        try {
+          const peer = new Peer(serverId, p2pConfig)
 
-      peer.on('open', function (id) {
-        console.log('My peer ID is: ' + id)
+          peer.on('open', function (id) {
+            state.commit('peerId', id)
+            resolve(id)
+            console.log('server created with id', id)
+          })
+          peer.on('connection', function (conn) {
+            conn.on('data', function (data) {
+              console.log(data)
+            })
+          })
+          state.commit('peer', peer)
+        } catch (err) {
+          reject(err)
+        }
       })
-      peer.on('connection', function (conn) {
-        conn.on('data', function (data) {
-          // Will print 'hi!'
-          console.log(data)
-        })
-      })
-
-      // state.commit('peer', peer)
     }
   }
 }
