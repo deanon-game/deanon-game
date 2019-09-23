@@ -1,20 +1,25 @@
-import has from 'lodash-es/has'
+import { has } from 'lodash-es'
 import modules from './modules/index'
+import IRequest from '@/models/IRecognizerRequest'
+import IResponse from '@/models/IRecognizerResponse'
+import Names from './modules/IModulesNames'
 
-function _type (request) {
-  return has(request, 'data.type') ? request.data.type : null
-}
+class Recognizer {
+  private static _type (request: IRequest): Names {
+    if (has(request, 'data.type')) {
+      return request.data.type
+    }
+    throw new Error(`Unable to resolve 'type' field in ${request}`)
+  }
 
-function resolve (request) {
-  console.log('resolve', request)
-  const type = _type(request)
-  if (type) {
-    return modules[type](request)
-  } else {
-    throw new Error('Unable to resolve request', request)
+  public static resolve (request: IRequest): IResponse {
+    const type = this._type(request)
+    if (has(modules, type)) {
+      return modules[type].process(request)
+    } else {
+      throw new Error(`No such module '${type}' in modules object`)
+    }
   }
 }
 
-export default {
-  resolve
-}
+export default Recognizer

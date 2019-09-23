@@ -1,5 +1,11 @@
-import chat from './chat'
+import IModules from './IModules'
 
-export default {
-  chat
+import chat from './chat'
+import auth from './auth'
+
+const modules: IModules = {
+  chat,
+  auth
 }
+
+export default modules

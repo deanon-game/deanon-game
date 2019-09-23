@@ -1,3 +1,3 @@
-import recognizer from './recognizer'
+import recognizer from './recognizer.ts'
 
 export default recognizer
