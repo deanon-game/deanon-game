@@ -6,14 +6,18 @@
     <div v-else>
       Генерация ссылки...
     </div>
-
+    <DeChat></DeChat>
   </div>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
+import DeChat from '@/components/Chat.vue'
 
 export default {
+  components: {
+    DeChat
+  },
   data () {
     return {
       gameSettings: {
