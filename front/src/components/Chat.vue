@@ -21,7 +21,7 @@ import Vue from 'vue'
 import logo from '../assets/anonymous.svg'
 
 export default Vue.extend({
-  data: function () {
+  data () {
     return {
       logo: logo
     }
