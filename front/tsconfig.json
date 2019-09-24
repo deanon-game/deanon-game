@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "typeRoots" : ["./src/typings"],
+    "experimentalDecorators": true,
     "target": "es5",
     "module": "esnext",
     "strict": true,
