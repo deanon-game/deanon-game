@@ -3,16 +3,22 @@ module.exports = {
   env: {
     node: true
   },
-  'extends': [
-    'plugin:vue/essential',
-    '@vue/standard',
-    '@vue/typescript'
+  parser: 'vue-eslint-parser',
+  parserOptions: {
+    parser: '@typescript-eslint/parser',
+    sourceType: 'module',
+    allowImportExportEverywhere: true
+  },
+  plugins: [
+    'vue'
   ],
   rules: {
     'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'off',
     'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off'
   },
-  parserOptions: {
-    parser: '@typescript-eslint/parser'
-  }
+  extends: [
+    'plugin:vue/recommended',
+    '@vue/standard',
+    '@vue/typescript'
+  ]
 }
