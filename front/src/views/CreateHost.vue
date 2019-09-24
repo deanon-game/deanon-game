@@ -1,12 +1,15 @@
 <template>
   <div class="settings">
     <div v-if="gameUrl">
-      Ваша игра будет доступна по адресу <a :href="gameUrl" target="_blank">{{gameUrl}}</a>
+      Ваша игра будет доступна по адресу <a
+        :href="gameUrl"
+        target="_blank"
+      >{{ gameUrl }}</a>
     </div>
     <div v-else>
       Генерация ссылки...
     </div>
-    <DeChat></DeChat>
+    <DeChat />
   </div>
 </template>
 

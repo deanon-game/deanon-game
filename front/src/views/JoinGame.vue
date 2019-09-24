@@ -2,14 +2,24 @@
   <div>
     <label class="settings__label">
       Ваш псевдоним в игре
-      <v-text-field type="text" placeholder="Не заполняйте чтоб получить случайный никнэйм" v-model="gameSettings.nickName"/>
+      <v-text-field
+        v-model="gameSettings.nickName"
+        type="text"
+        placeholder="Не заполняйте чтоб получить случайный никнэйм"
+      />
     </label>
     <label class="settings__label">
       Настоящее имя
-      <v-text-field type="text" placeholder="Не заполняйте чтоб получить случайный никнэйм" v-model="gameSettings.realName"/>
+      <v-text-field
+        v-model="gameSettings.realName"
+        type="text"
+        placeholder="Не заполняйте чтоб получить случайный никнэйм"
+      />
     </label>
-    <v-btn @click="onJoin">Присоединиться</v-btn>
-    <ErrorMassage :errorList="errorList"/>
+    <v-btn @click="onJoin">
+      Присоединиться
+    </v-btn>
+    <ErrorMassage :error-list="errorList" />
   </div>
 </template>
 

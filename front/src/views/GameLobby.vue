@@ -1,6 +1,6 @@
 <template>
   <div>
-  Название игры: {{gameInfo.gameName}}
+    Название игры: {{ gameInfo.gameName }}
   </div>
 </template>
 

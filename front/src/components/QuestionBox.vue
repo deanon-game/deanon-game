@@ -1,10 +1,15 @@
 <template>
-    <div>
-      <label class="question__settings">
-        <textarea v-model="question" placeholder="Ваш вопрос"></textarea>
-      </label>
-      <button @click="addQuestion()">Добавить вопрос</button>
-    </div>
+  <div>
+    <label class="question__settings">
+      <textarea
+        v-model="question"
+        placeholder="Ваш вопрос"
+      />
+    </label>
+    <button @click="addQuestion()">
+      Добавить вопрос
+    </button>
+  </div>
 </template>
 
 <script>
