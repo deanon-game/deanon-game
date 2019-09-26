@@ -5,7 +5,7 @@ cache: yarn
 install:
   - yarn
   - cd front && yarn
-  - cd ../server && yarn && cd ..
+  - cd ../back && yarn && cd ..
 branches:
   except:
     - gh-pages

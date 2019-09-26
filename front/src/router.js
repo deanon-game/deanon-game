@@ -15,7 +15,7 @@ export default new Router({
     {
       path: '/create',
       name: 'create',
-      component: () => import(/* webpackChunkName: "CreateGame" */ './views/CreateGame.vue')
+      component: () => import(/* webpackChunkName: "CreateHost" */ './views/CreateHost.vue')
     },
     {
       path: '/join/:id',

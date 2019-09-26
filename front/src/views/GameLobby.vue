@@ -1,12 +1,11 @@
 <template>
   <div>
-  Название игры: {{gameInfo.gameName}}
+    Название игры: {{ gameInfo.gameName }}
   </div>
 </template>
 
 <script>
 import axios from 'axios'
-import io from 'socket.io-client'
 
 export default {
   data () {
@@ -16,15 +15,15 @@ export default {
     }
   },
   created () {
-    const socket = io('http://localhost:8000')
-    socket.emit('join room', localStorage.token, 'eNwGmea1561096180238')
-    socket.on('new data', doc => {
-      this.gameInfo = doc.params
-    })
-    socket.on('err', data => {
-      this.error = data
-      console.log(this.error)
-    })
+    // const socket = io('http://localhost:8000')
+    // socket.emit('join room', localStorage.token, 'eNwGmea1561096180238')
+    // socket.on('new data', doc => {
+    //   this.gameInfo = doc.params
+    // })
+    // socket.on('err', data => {
+    //   this.error = data
+    //   console.log(this.error)
+    // })
   },
   methods: {
     loadPlayer () {

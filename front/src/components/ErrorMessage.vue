@@ -1,14 +1,14 @@
 <template>
   <v-snackbar
-      v-model="isNeedToShowErrors"
-      color="error"
-      :timeout="2000"
-      multi-line
-    >
-      <template v-for="error in errorList">
-        {{error}}
-      </template>
-    </v-snackbar>
+    v-model="isNeedToShowErrors"
+    color="error"
+    :timeout="2000"
+    multi-line
+  >
+    <template v-for="error in errorList">
+      {{ error }}
+    </template>
+  </v-snackbar>
 </template>
 
 <script>
