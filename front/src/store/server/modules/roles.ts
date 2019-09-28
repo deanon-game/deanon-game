@@ -1,5 +1,5 @@
-import Permissions from '@/models/TPermissions'
-import Permission from '@/models/TPermission'
+import Permissions from '@/models/server/TPermissions'
+import Permission from '@/models/server/TPermission'
 import User from '@/models/User'
 import { get } from 'lodash-es'
 
