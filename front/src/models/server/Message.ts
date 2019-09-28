@@ -1,15 +1,15 @@
-import Peer from '@/models/server/Peer'
+import User from '@/models/server/User'
 
 type Avatar = null | string
 
 export default class Message {
   public avatar: Avatar
-  public client: Peer
+  public user: User
   public text: string
 
-  constructor (client: Peer, text: string, avatar: Avatar = null) {
+  constructor (user: User, text: string, avatar: Avatar = null) {
     this.avatar = avatar
-    this.client = client
+    this.user = user
     this.text = text
   }
 }

@@ -1,5 +1,5 @@
 import Peer from 'peerjs'
-import p2pConfig from '../p2p.config'
+import p2pConfig from '@/helpers/p2p.config.ts'
 
 export default {
   namespaced: true,

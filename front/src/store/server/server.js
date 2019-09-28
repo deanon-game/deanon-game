@@ -1,6 +1,3 @@
-import Peer from 'peerjs'
-import p2pConfig from '../p2p.config'
-
 import modules from './modules/index.ts'
 
 import recognizer from '@/helpers/recognizer/index'

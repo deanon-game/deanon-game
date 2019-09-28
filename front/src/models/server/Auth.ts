@@ -1,7 +1,7 @@
-import Peer from '@/models/server/Peer'
+import User from '@/models/server/User'
 
 export default interface Auth {
-  caller: Peer
+  caller: User
   connection: any
   data: {
     type: 'auth'

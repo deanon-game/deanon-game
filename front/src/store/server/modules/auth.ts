@@ -1,4 +1,4 @@
-import Peer from '@/models/server/Peer'
+import Client from '@/models/server/Client'
 import Auth from '@/models/server/auth'
 import nanoid from 'nanoid'
 
@@ -10,8 +10,8 @@ export default {
     clients: {}
   },
   mutations: {
-    addClient (state: any, peerId: string) {
-      state.peers[peerId] = new Peer(nanoid(), peerId)
+    addClient (state: any, auth: Auth) {
+      state.peers[auth.connection.connectionId] = new Client(nanoid(), auth)
     }
   },
   getters: {
