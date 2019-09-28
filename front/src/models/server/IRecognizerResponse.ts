@@ -1,4 +1,4 @@
-import Message from '@/models/Message'
+import Message from '@/models/server/Message'
 
 export default interface Response {
   messages: Array<Message>,

@@ -1,4 +1,4 @@
-import Message from '@/models/Message'
+import Message from '@/models/server/Message'
 
 import defaultLogo from '@/assets/anonymous.svg'
 

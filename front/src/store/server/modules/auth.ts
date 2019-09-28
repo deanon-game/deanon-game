@@ -1,5 +1,5 @@
 import Client from '@/models/server/Client'
-import Auth from '@/models/server/Auth'
+import Auth from '@/models/server/auth'
 import nanoid from 'nanoid'
 
 import { has } from 'lodash-es'

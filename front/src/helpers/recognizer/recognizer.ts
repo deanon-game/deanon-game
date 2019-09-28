@@ -1,7 +1,7 @@
 import { has } from 'lodash-es'
 import modules from './modules/index'
-import IRequest from '@/models/IRecognizerRequest'
-import IResponse from '@/models/IRecognizerResponse'
+import IRequest from '@/models/server/IRecognizerRequest'
+import IResponse from '@/models/server/IRecognizerResponse'
 
 type Modules = 'chat' | 'auth'
 class Recognizer {

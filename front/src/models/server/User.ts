@@ -1,4 +1,4 @@
-import TRoleNames from '@/models/TRoleNames'
+import TRoleNames from '@/models/server/TRoleNames'
 
 export default class User {
   public name: string | null

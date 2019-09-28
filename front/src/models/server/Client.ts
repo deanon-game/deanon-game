@@ -1,5 +1,5 @@
 import TRoleNames from '@/models/server/TRoleNames'
-import User from '@/models/User'
+import User from '@/models/server/User'
 
 export default class Client extends User {
   public peerId: string

@@ -1,6 +1,6 @@
 import Permissions from '@/models/server/TPermissions'
 import Permission from '@/models/server/TPermission'
-import User from '@/models/User'
+import User from '@/models/server/User'
 import { get } from 'lodash-es'
 
 interface PermissionToCheck {

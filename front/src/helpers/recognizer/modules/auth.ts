@@ -1,6 +1,6 @@
 import Module from './IModule'
-import Request from '@/models/IRecognizerRequest'
-import Response from '@/models/IRecognizerResponse'
+import Request from '@/models/server/IRecognizerRequest'
+import Response from '@/models/server/IRecognizerResponse'
 
 class Auth implements Module {
   public process (request: Request):Response {
