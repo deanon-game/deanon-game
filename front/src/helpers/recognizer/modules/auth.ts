@@ -1,4 +1,4 @@
-import Module from './IModule'
+import Module from './models/IModule'
 import Request from '@/models/server/IRecognizerRequest'
 import Response from '@/models/server/IRecognizerResponse'
 
