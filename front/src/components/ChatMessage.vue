@@ -13,8 +13,12 @@
       </v-avatar>
     </v-col>
     <v-col cols="11">
-      {{ message.name }}
-      {{ message.text }}
+      <div class="title">
+        {{ message.user.name }}
+      </div>
+      <div>
+        {{ message.text }}
+      </div>
     </v-col>
   </v-row>
 </template>
@@ -28,8 +32,8 @@ import Message from '@/models/Message'
 export default class Chat extends Vue {
  @Prop({
    type: Object,
-   default: () => {}
- }) readonly message!: {}
+   required: true
+ }) readonly message!: Message
 }
 </script>
 
