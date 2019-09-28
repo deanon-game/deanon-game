@@ -1,12 +1,10 @@
 import User from '@/models/server/User'
-import Auth from '@/models/server/Auth'
-import Peer from 'peerjs'
-import p2pConfig from '@/helpers/p2p.config'
+import IAuth from '@/models/server/IAuth'
 
 export default class Client extends User {
   public connection: any
-  constructor (state: any, authData: Auth) {
-    super(authData.connection.connectionId, authData.data.name, 'client')
-    this.connection = authData.connection
+  constructor (state: any, auth: IAuth) {
+    super(auth.connection.connectionId, auth.data.name)
+    this.connection = auth.connection
   }
 }

@@ -1,5 +1,5 @@
 import Client from '@/models/server/Client'
-import Auth from '@/models/server/auth'
+import IAuth from '@/models/server/IAuth'
 import nanoid from 'nanoid'
 
 import { has } from 'lodash-es'
@@ -10,7 +10,7 @@ export default {
     clients: {}
   },
   mutations: {
-    addClient (state: any, auth: Auth) {
+    addClient (state: any, auth: IAuth) {
       state.peers[auth.connection.connectionId] = new Client(nanoid(), auth)
     }
   },
@@ -20,7 +20,7 @@ export default {
     }
   },
   actions: {
-    resolve (state: any, auth: Auth) {
+    resolve (state: any, auth: IAuth) {
       const id = auth.connection.connectionId
       if (has(state.getters.clients, id)) {
         if (has(state.getters.clients, `${id}.type`)) {
