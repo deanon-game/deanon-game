@@ -6,9 +6,8 @@ class Chat implements Module {
   public process (request: Request):Response {
     console.log('chat', request)
     return {
-      messages: [
-
-      ]
+      messages: [],
+      responseToPeer: {}
     }
   }
 }
