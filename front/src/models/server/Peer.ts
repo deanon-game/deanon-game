@@ -1,7 +1,7 @@
 import TRoleNames from '@/models/server/TRoleNames'
 import User from '@/models/server/User'
 
-export default class Client extends User {
+export default class Peer extends User {
   public peerId: string
 
   constructor (
