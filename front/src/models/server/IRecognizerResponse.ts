@@ -1,5 +1,6 @@
-type Message = any
+import Message from '@/models/Message'
 
 export default interface Response {
-  messages: Array<Message>
+  messages: Array<Message>,
+  responseToPeer: any
 }

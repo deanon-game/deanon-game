@@ -1,13 +1,15 @@
-import User from '@/models/User.ts'
+import Client from '@/models/Client'
 
 type Avatar = null | string
 
 export default class Message {
   public avatar: Avatar
-  public user: User
+  public client: Client
+  public text: string
 
-  constructor (user: User, avatar: Avatar = null) {
+  constructor (client: Client, text: string, avatar: Avatar = null) {
     this.avatar = avatar
-    this.user = user
+    this.client = client
+    this.text = text
   }
 }
