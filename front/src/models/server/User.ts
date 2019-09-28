@@ -1,4 +1,5 @@
 import TRoleNames from '@/models/server/TRoleNames'
+import ServerError from '@/models/server/ServerError'
 
 export default class User {
   public name: string | null
@@ -23,8 +24,10 @@ export default class User {
         path: `auth/rename/${renameType}`
       }).then((hasPermission: boolean) => {
         if (!hasPermission) {
-          console.error(`permission to change ${renameType} username was denied. Caller:`, caller)
-          throw new Error()
+          reject(new ServerError({
+            message: `RenameError: Permission to change ${renameType} username was denied.`,
+            caller
+          }))
         }
         this.name = newName
         resolve(this)
