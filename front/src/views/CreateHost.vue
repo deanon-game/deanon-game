@@ -27,7 +27,7 @@ import { Vue, Component, Watch } from 'vue-property-decorator'
     DeChat
   }
 })
-export default class App extends Vue {
+export default class CreateHost extends Vue {
   created () {
     this.createGame()
   }

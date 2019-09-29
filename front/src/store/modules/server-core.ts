@@ -23,10 +23,10 @@ export interface IServerModule {
 export default class ServerModule extends VuexModule implements IServerModule {
   private _server: Server | null = null
 
-  public get server (): Server | null {
+  get server (): Server | null {
     return this._server
   }
-  public get linkToConnect (): string | null {
+  get linkToConnect (): string | null {
     if (this.server) {
       return `${window.location.origin}/join/${this.server.id}`
     } else {
