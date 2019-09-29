@@ -18,6 +18,8 @@ import DeChat from '@/components/Chat.vue'
 import User from '@/models/server/User.ts'
 import nanoid from 'nanoid'
 
+import Server from '@/models/server/Server'
+
 import ServerModule from '@/store/modules/server-core'
 
 import { Vue, Component, Watch } from 'vue-property-decorator'
@@ -27,7 +29,7 @@ import { Vue, Component, Watch } from 'vue-property-decorator'
     DeChat
   }
 })
-export default class App extends Vue {
+export default class CreateHost extends Vue {
   created () {
     this.createGame()
   }
@@ -41,7 +43,9 @@ export default class App extends Vue {
 
   @Watch('server')
   function () {
-    this.changePath(this.server.id)
+    if (this.server) {
+      this.changePath(this.server.id)
+    }
   }
 
   private changePath (newHostId: string) {
@@ -53,8 +57,8 @@ export default class App extends Vue {
     })
   }
   private createGame () {
-    const user1 = new User(nanoid(), 'Вася')
-    const user2 = new User(nanoid(), 'Петя')
+    const user1 = new User({ name: 'Вася' })
+    const user2 = new User({ name: 'Петя' })
 
     user1.rename(this.$store, user1, 'Фёдор').then(() => {
       console.log('user1 now is ', user1)

@@ -1,7 +1,7 @@
-export default interface IData {
+
+export default interface IData<P, E> {
+  /* Use for Client & Host Massages */
   query: string,
-  params: [],
-  extra: {
-    [key: string]: any
-  }
+  params: P,
+  extra: E
 }

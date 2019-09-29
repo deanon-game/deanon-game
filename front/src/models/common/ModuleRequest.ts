@@ -1,21 +1,22 @@
 import IData from '@/models/api/IData'
 import User from '@/models/server/User'
+import Connection from '@/models/common/Connection'
 
-export interface IModuleRequest {
+export interface IModuleRequest<P, E> {
   caller: User
-  connection: any
-  data: IData
+  connection: Connection
+  data: IData<P, E>
 }
 
-export class ModuleRequest implements IModuleRequest {
+export default class ModuleRequest<P, E> implements IModuleRequest<P, E> {
   caller: User
-  connection: any
-  data: IData
+  connection: Connection
+  data: IData<P, E>
 
   constructor (
     caller: User,
-    connection: any,
-    data: IData
+    connection: Connection,
+    data: IData<P, E>
   ) {
     this.caller = caller
     this.connection = connection

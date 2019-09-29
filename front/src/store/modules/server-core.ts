@@ -2,13 +2,14 @@ import store from '@/store/index'
 
 import Server from '@/models/server/Server'
 import IData from '@/models/api/IData'
+import FreeObject from '@/models/common/FreeObject'
 
 import NPeer from 'peerjs'
-import { Module, VuexModule, Mutation, Action } from 'vuex-module-decorators'
+import { Module, VuexModule, Mutation, Action, getModule } from 'vuex-module-decorators'
 
 interface OnGotDataPayload {
   connection: NPeer.DataConnection
-  data: IData
+  data: IData<FreeObject, FreeObject>
 }
 
 export interface IServerModule {
@@ -20,13 +21,13 @@ export interface IServerModule {
 }
 
 @Module({ dynamic: true, store, name: 'server' })
-export default class ServerModule extends VuexModule implements IServerModule {
+class ServerModule extends VuexModule implements IServerModule {
   private _server: Server | null = null
 
-  public get server (): Server | null {
+  get server (): Server | null {
     return this._server
   }
-  public get linkToConnect (): string | null {
+  get linkToConnect (): string | null {
     if (this.server) {
       return `${window.location.origin}/join/${this.server.id}`
     } else {
@@ -59,3 +60,5 @@ export default class ServerModule extends VuexModule implements IServerModule {
     }
   }
 }
+
+export default getModule(ServerModule)
