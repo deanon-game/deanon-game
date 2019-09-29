@@ -57,8 +57,8 @@ export default class CreateHost extends Vue {
     })
   }
   private createGame () {
-    const user1 = new User(nanoid(), 'Вася')
-    const user2 = new User(nanoid(), 'Петя')
+    const user1 = new User({ name: 'Вася' })
+    const user2 = new User({ name: 'Петя' })
 
     user1.rename(this.$store, user1, 'Фёдор').then(() => {
       console.log('user1 now is ', user1)

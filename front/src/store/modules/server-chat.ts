@@ -2,6 +2,7 @@ import store from '@/store/index'
 import { Module, VuexModule, Mutation, Action, getModule } from 'vuex-module-decorators'
 
 import { IModuleRequest } from '@/models/common/ModuleRequest'
+import FreeObject from '@/models/common/FreeObject'
 import Message from '@/models/server/Message'
 
 import defaultLogo from '@/assets/anonymous.svg'
@@ -11,7 +12,7 @@ export interface IChatModule {
   readonly messages: {[key: string]: Message}
   incrementCount (): void
   addMessage (message: Message): void
-  resolve(request: IModuleRequest): void
+  resolve(request: IModuleRequest<FreeObject, FreeObject>): void
 }
 
 @Module({ dynamic: true, store, name: 'chat' })
@@ -39,7 +40,7 @@ class ChatModule extends VuexModule implements IChatModule {
   }
 
   @Action
-  resolve (request: IModuleRequest) {
+  resolve (request: IModuleRequest<FreeObject, FreeObject>) {
     // const message = new Message(user2, text1, defaultLogo)
   }
 }

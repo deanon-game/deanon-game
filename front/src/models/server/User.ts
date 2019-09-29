@@ -1,20 +1,23 @@
+import nanoid from 'nanoid'
+
 import TRoleNames from '@/models/server/TRoleNames'
 import ServerError from '@/models/server/ServerError'
 import RolesModule from '@/store/modules/server-roles'
 
+export interface NewUserPayload {
+  name?: string
+  role?: TRoleNames
+  id?: string
+}
 export default class User {
   public name: string | null
   public role: TRoleNames
   public id: string
 
-  constructor (
-    id: string,
-    name: string | null = null,
-    role: TRoleNames = 'client'
-  ) {
-    this.name = name
-    this.role = role
-    this.id = id
+  constructor ({ name, role, id }: NewUserPayload) {
+    this.name = name || null
+    this.role = role || 'client'
+    this.id = id || nanoid()
   }
 
   public rename (store: any, caller: User, newName: string) {

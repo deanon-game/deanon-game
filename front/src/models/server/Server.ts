@@ -9,7 +9,7 @@ import ServerModule from '@/store/modules/server-core'
 export default class Server extends User {
   constructor (id?: string) {
     const peer = new Peer(id, p2pConfig)
-    super('', 'server', 'system')
+    super({ name: 'server', role: 'system' })
     peer.on('open', (id) => {
       this.id = id
     })
