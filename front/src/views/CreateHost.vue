@@ -1,10 +1,10 @@
 <template>
   <div class="settings">
-    <div v-if="gameUrl">
+    <div v-if="linkToConnect">
       Ваша игра будет доступна по адресу <a
-        :href="gameUrl"
+        :href="linkToConnect"
         target="_blank"
-      >{{ gameUrl }}</a>
+      >{{ linkToConnect }}</a>
     </div>
     <div v-else>
       Генерация ссылки...
@@ -16,6 +16,8 @@
 <script>
 import { mapGetters } from 'vuex'
 import DeChat from '@/components/Chat.vue'
+import User from '@/models/server/User.ts'
+import nanoid from 'nanoid'
 
 export default {
   components: {
@@ -35,21 +37,21 @@ export default {
   },
   computed: {
     ...mapGetters({
-      serverId: 'server/peerId'
-    }),
-    gameUrl () {
-      if (this.serverId) {
-        return `${window.location.origin}/join/${this.serverId}`
-      } else {
-        return false
-      }
-    }
+      linkToConnect: 'server/linkToConnect'
+    })
   },
   created () {
     this.createGame()
   },
   methods: {
     createGame () {
+      const user1 = new User(nanoid(), 'Вася')
+      const user2 = new User(nanoid(), 'Петя')
+
+      user1.rename(this.$store, user2, 'Фёдор').then(() => {
+        console.log('user1 now is ', user1)
+      })
+
       this.$store.dispatch('server/create', this.$route.query.hostId || null).then((newHostId) => {
         console.log('newHostId', newHostId)
         this.$router.push({

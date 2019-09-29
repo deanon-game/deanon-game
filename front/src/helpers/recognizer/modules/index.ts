@@ -1,9 +1,7 @@
-import IModules from './IModules'
-
 import chat from './chat'
 import auth from './auth'
 
-const modules: IModules = {
+const modules = {
   chat,
   auth
 }

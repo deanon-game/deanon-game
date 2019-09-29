@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import client from './client/index.js'
-import server from './server/index.js'
+import server from './server/index'
 
 Vue.use(Vuex)
 

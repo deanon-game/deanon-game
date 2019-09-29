@@ -1,5 +1,5 @@
 import IModule from './IModule'
-import Names from './IModulesNames'
+import Names from '@/models/server/TModulesNames'
 
 type IModules = {[key in Names]: IModule};
 

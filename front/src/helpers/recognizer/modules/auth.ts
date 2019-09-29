@@ -1,12 +1,13 @@
 import Module from './IModule'
-import Request from '@/models/IRecognizerRequest'
-import Response from '@/models/IRecognizerResponse'
+import Request from '@/models/server/IRecognizerRequest'
+import Response from '@/models/server/IRecognizerResponse'
 
 class Auth implements Module {
   public process (request: Request):Response {
-    console.log('chat', request)
+    console.log('auth', request)
     return {
-      messages: []
+      messages: [],
+      responseToPeer: {}
     }
   }
 }

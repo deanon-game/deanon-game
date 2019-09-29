@@ -1,11 +1,11 @@
 import { has } from 'lodash-es'
 import modules from './modules/index'
-import IRequest from '@/models/IRecognizerRequest'
-import IResponse from '@/models/IRecognizerResponse'
-import Names from './modules/IModulesNames'
+import IRequest from '@/models/server/IRecognizerRequest'
+import IResponse from '@/models/server/IRecognizerResponse'
 
+type Modules = 'chat' | 'auth'
 class Recognizer {
-  private static _type (request: IRequest): Names {
+  private static _type (request: IRequest): Modules {
     if (has(request, 'data.type')) {
       return request.data.type
     }
