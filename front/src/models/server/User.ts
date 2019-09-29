@@ -1,5 +1,6 @@
 import TRoleNames from '@/models/server/TRoleNames'
 import ServerError from '@/models/server/ServerError'
+import RolesModule from '@/store/modules/server-roles'
 
 export default class User {
   public name: string | null
@@ -19,7 +20,7 @@ export default class User {
   public rename (store: any, caller: User, newName: string) {
     return new Promise((resolve, reject) => {
       const renameType = this.id === caller.id ? 'own' : 'other'
-      store.dispatch('server/roles/hasPermission', {
+      RolesModule.hasPermission({
         caller,
         path: `auth/rename/${renameType}`
       }).then((hasPermission: boolean) => {
