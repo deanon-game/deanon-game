@@ -11,6 +11,8 @@
 import { Vue, Component, Prop } from 'vue-property-decorator'
 import ChatMessage from './ChatMessage.vue'
 
+import ClientModule, { ConnectionPayload } from '@/store/modules/client-core'
+
 @Component({
   components: {
     ChatMessage
@@ -20,16 +22,19 @@ export default class JoinChat extends Vue {
   @Prop({
     type: String,
     required: true
-  }) readonly id!: string
+  }) readonly serverId!: string
 
   created () {
     this.joinChat()
   }
   joinChat () {
-    this.$store.dispatch('client/connect', this.id)
+    const payload: ConnectionPayload = {
+      serverId: this.serverId
+    }
+    ClientModule.connect(payload)
   }
   onJoin () {
-    this.$store.dispatch('client/send', {
+    ClientModule.send({
       type: 'chat',
       message: 'hello :)'
     })

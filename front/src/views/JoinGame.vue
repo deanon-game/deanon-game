@@ -1,6 +1,6 @@
 <template>
   <div>
-    <JoinChat :id="id" />
+    <JoinChat :server-id="serverId" />
   </div>
 </template>
 
@@ -14,7 +14,7 @@ import JoinChat from '@/components/JoinChat.vue'
   }
 })
 export default class JoinGame extends Vue {
-  get id () {
+  get serverId () {
     return this.$route.params.id
   }
 }

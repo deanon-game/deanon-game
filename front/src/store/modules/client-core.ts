@@ -8,7 +8,7 @@ export interface IClientModule {}
 
 type Connection = Peer.DataConnection
 
-interface ConnectionPayload {
+export interface ConnectionPayload {
   serverId: string,
   peerId?: string
 }
