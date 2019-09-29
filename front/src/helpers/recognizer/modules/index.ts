@@ -1,9 +1,9 @@
-import chat from './chat'
-import auth from './auth'
+// import chat from './chat'
+// import auth from './auth'
 
-const modules = {
-  chat,
-  auth
-}
+// const modules = {
+//   chat,
+//   auth
+// }
 
-export default modules
+// export default modules
