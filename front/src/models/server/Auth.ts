@@ -9,10 +9,7 @@ type Data = {
 export default class Auth implements IAuth {
   caller: User
   connection: any
-  data: {
-    type: 'auth'
-    name: string
-  }
+  data: Data
   constructor (caller: User, connection: any, data: Data = {
     type: 'auth',
     name: ''
