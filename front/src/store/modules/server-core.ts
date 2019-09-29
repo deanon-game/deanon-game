@@ -2,13 +2,14 @@ import store from '@/store/index'
 
 import Server from '@/models/server/Server'
 import IData from '@/models/api/IData'
+import FreeObject from '@/models/common/FreeObject'
 
 import NPeer from 'peerjs'
 import { Module, VuexModule, Mutation, Action, getModule } from 'vuex-module-decorators'
 
 interface OnGotDataPayload {
   connection: NPeer.DataConnection
-  data: IData
+  data: IData<FreeObject, FreeObject>
 }
 
 export interface IServerModule {
