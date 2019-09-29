@@ -1,5 +1,6 @@
 import TRoleNames from '@/models/server/TRoleNames'
 import ServerError from '@/models/server/ServerError'
+import $roles from '@/store/modules/'
 
 export default class User {
   public name: string | null
