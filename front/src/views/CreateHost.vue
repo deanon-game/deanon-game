@@ -18,6 +18,8 @@ import DeChat from '@/components/Chat.vue'
 import User from '@/models/server/User.ts'
 import nanoid from 'nanoid'
 
+import Server from '@/models/server/Server'
+
 import ServerModule from '@/store/modules/server-core'
 
 import { Vue, Component, Watch } from 'vue-property-decorator'
@@ -41,7 +43,9 @@ export default class CreateHost extends Vue {
 
   @Watch('server')
   function () {
-    this.changePath(this.server.id)
+    if (this.server) {
+      this.changePath(this.server.id)
+    }
   }
 
   private changePath (newHostId: string) {

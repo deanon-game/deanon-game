@@ -4,7 +4,7 @@ import User from '@/models/server/User'
 import { get } from 'lodash-es'
 
 import store from '@/store/index'
-import { Module, VuexModule, Mutation, Action } from 'vuex-module-decorators'
+import { Module, VuexModule, Mutation, Action, getModule } from 'vuex-module-decorators'
 
 interface PermissionToCheck {
   caller: User,
@@ -18,7 +18,7 @@ export interface IRolesModule {
 }
 
 @Module({ dynamic: true, store, name: 'roles' })
-export default class RolesModule extends VuexModule implements IRolesModule {
+class RolesModule extends VuexModule implements IRolesModule {
   get defaultPermissions (): Permission {
     return {
       all: false,
@@ -78,3 +78,5 @@ export default class RolesModule extends VuexModule implements IRolesModule {
     return false
   }
 }
+
+export default getModule(RolesModule)

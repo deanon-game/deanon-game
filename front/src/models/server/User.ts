@@ -20,21 +20,17 @@ export default class User {
   public rename (store: any, caller: User, newName: string) {
     return new Promise((resolve, reject) => {
       const renameType = this.id === caller.id ? 'own' : 'other'
-      RolesModule.hasPermission({
+      const hasRenamePermission = RolesModule.hasPermission({
         caller,
         path: `auth/rename/${renameType}`
-      }).then((hasPermission: boolean) => {
-        if (!hasPermission) {
-          reject(new ServerError({
-            message: `RenameError: Permission to change ${renameType} username was denied.`,
-            caller
-          }))
-        }
-        this.name = newName
-        resolve(this)
-      }).catch((e: Error) => {
-        reject(e)
       })
+      if (!hasRenamePermission) {
+        reject(new ServerError({
+          message: `RenameError: Permission to change ${renameType} username was denied.`,
+          caller
+        }))
+      }
+      this.name = newName
     })
   }
 }

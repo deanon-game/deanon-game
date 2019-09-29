@@ -4,7 +4,7 @@ import Server from '@/models/server/Server'
 import IData from '@/models/api/IData'
 
 import NPeer from 'peerjs'
-import { Module, VuexModule, Mutation, Action } from 'vuex-module-decorators'
+import { Module, VuexModule, Mutation, Action, getModule } from 'vuex-module-decorators'
 
 interface OnGotDataPayload {
   connection: NPeer.DataConnection
@@ -20,7 +20,7 @@ export interface IServerModule {
 }
 
 @Module({ dynamic: true, store, name: 'server' })
-export default class ServerModule extends VuexModule implements IServerModule {
+class ServerModule extends VuexModule implements IServerModule {
   private _server: Server | null = null
 
   get server (): Server | null {
@@ -59,3 +59,5 @@ export default class ServerModule extends VuexModule implements IServerModule {
     }
   }
 }
+
+export default getModule(ServerModule)

@@ -3,7 +3,7 @@ import store from '@/store'
 import Client from '@/models/server/Client'
 import IAuth from '@/models/server/IAuth'
 
-import { Module, VuexModule, Mutation, Action } from 'vuex-module-decorators'
+import { Module, VuexModule, Mutation, Action, getModule } from 'vuex-module-decorators'
 
 import { has } from 'lodash-es'
 
@@ -19,7 +19,7 @@ export interface IAuthModule {
   resolve (auth: IAuth): void
 }
 @Module({ dynamic: true, store, name: 'auth' })
-export default class AuthModule extends VuexModule implements IAuthModule {
+class AuthModule extends VuexModule implements IAuthModule {
   private _clients: { [key: string]: Client } = {}
 
   public get clients () {
@@ -49,3 +49,5 @@ export default class AuthModule extends VuexModule implements IAuthModule {
     }
   }
 }
+
+export default getModule(AuthModule)

@@ -1,5 +1,5 @@
 import store from '@/store/index'
-import { Module, VuexModule, Mutation, Action } from 'vuex-module-decorators'
+import { Module, VuexModule, Mutation, Action, getModule } from 'vuex-module-decorators'
 
 import { IModuleRequest } from '@/models/common/ModuleRequest'
 import Message from '@/models/server/Message'
@@ -15,7 +15,7 @@ export interface IChatModule {
 }
 
 @Module({ dynamic: true, store, name: 'chat' })
-export default class ChatModule extends VuexModule implements IChatModule {
+class ChatModule extends VuexModule implements IChatModule {
   private _messages: {[key: string]: Message} = {}
   private _count: number = 0
   public defaultLogo: any = defaultLogo
@@ -43,3 +43,5 @@ export default class ChatModule extends VuexModule implements IChatModule {
     // const message = new Message(user2, text1, defaultLogo)
   }
 }
+
+export default getModule(ChatModule)
