@@ -1,38 +1,61 @@
-import modules from '@/store/server/modules/index'
-import Server from '@/models/server/Server'
+import store from '@/store/index'
 
-export default {
-  namespaced: true,
-  modules,
-  state: {
-    server: null
-  },
-  getters: {
-    server (state: any) {
-      return state.server
-    },
-    linkToConnect (state: any) {
-      if (state.server.id) {
-        return `${window.location.origin}/join/${state.server.id}`
-      } else {
-        return false
-      }
+import Server from '@/models/server/Server'
+import IData from '@/models/api/IData'
+
+import NPeer from 'peerjs'
+import { Module, VuexModule, Mutation, Action } from 'vuex-module-decorators'
+
+interface OnGotDataPayload {
+  connection: NPeer.DataConnection
+  data: IData
+}
+
+export interface IServerModule {
+  readonly server: Server | null
+  readonly linkToConnect: string | null
+  setServer (server: Server) : void
+  create (serverId?: string) : void
+  onGotData (payload: OnGotDataPayload) : void
+}
+
+@Module({ dynamic: true, store, name: 'server' })
+export default class ServerModule extends VuexModule implements IServerModule {
+  private _server: Server | null = null
+
+  public get server (): Server | null {
+    return this._server
+  }
+  public get linkToConnect (): string | null {
+    if (this.server) {
+      return `${window.location.origin}/join/${this.server.id}`
+    } else {
+      return null
     }
-  },
-  mutations: {
-    server (state: any, server: Server) {
-      state.server = server
+  }
+
+  @Mutation
+  public setServer (server: Server) {
+    this._server = server
+  }
+
+  @Action
+  public create (serverId?: string) {
+    try {
+      const server = new Server(serverId)
+      this.context.commit('setServer', server)
+    } catch (err) {
+      throw new Error(err)
     }
-  },
-  actions: {
-    create (state: any, serverId?: string) {
-      return new Promise((resolve, reject) => {
-        try {
-          state.commit('server', new Server(state, serverId))
-        } catch (err) {
-          reject(err)
-        }
-      })
+  }
+  @Action
+  public onGotData (payload: OnGotDataPayload) {
+    try {
+      console.log('got', payload)
+      // const server = new Server(serverId)
+      // this.context.commit('setServer', server)
+    } catch (err) {
+      throw new Error(err)
     }
   }
 }
