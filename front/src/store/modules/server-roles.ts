@@ -46,11 +46,29 @@ export default {
     }
   },
   actions: {
-    hasPermission (state: any, permissionToCheck: PermissionToCheck) {
-      return new Promise((resolve, reject) => {
-        const path = `${permissionToCheck.caller.role}.${permissionToCheck.path.replace(/\//gm, '.')}`
-        resolve(get(state.getters.permissions, path, false))
-      })
+    hasPermission (state: any, permissionToCheck: PermissionToCheck):boolean {
+      const path = `${permissionToCheck.path.replace(/\//gm, '.')}`
+      const cfg = state.getters.permissions[permissionToCheck.caller.role]
+
+      let pathArr = path.split('.')
+
+      // find full path param
+      let _path = pathArr.join('.')
+      let result = get(cfg, _path, undefined)
+      if (typeof result === 'boolean') return result
+
+      // find "all" param of parrant recursive
+      while (pathArr.length > 1) {
+        _path = pathArr.join('.') + '.all'
+        result = get(cfg, _path, undefined)
+        if (typeof result === 'boolean') return result
+        pathArr.pop()
+      }
+      // find "all" param of root
+      _path = 'all'
+      result = get(cfg, _path, undefined)
+      if (typeof result === 'boolean') return result
+      return false
     }
   }
 }
