@@ -48,7 +48,7 @@ export default {
       const user1 = new User(nanoid(), 'Вася')
       const user2 = new User(nanoid(), 'Петя')
 
-      user1.rename(this.$store, user1, 'Фёдор').then(() => {
+      user1.rename(this.$store, user2, 'Фёдор').then(() => {
         console.log('user1 now is ', user1)
       })
 
