@@ -1,0 +1,18 @@
+language: node_js
+node_js:
+  - "10.16.0"
+cache: yarn
+install:
+  - yarn
+  - cd front && yarn
+  - cd ../back && yarn && cd ..
+branches:
+  except:
+    - gh-pages
+stages:
+  - lint
+jobs:
+  include:
+    - stage: lint
+      script:
+        - yarn lint
