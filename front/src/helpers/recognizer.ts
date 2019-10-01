@@ -1,25 +1,40 @@
-import TModulesNames from '@/addons/models/TModulesNames'
-import { has } from 'lodash-es'
-// import modules from './modules/index'
+import { get } from 'lodash-es'
 import ModuleRequest from '@/models/common/ModuleRequest'
 import FreeObject from '@/models/common/FreeObject'
 
-class Recognizer {
-  private static _query (request: ModuleRequest<FreeObject, FreeObject>) {
-    if (has(request, 'data.query')) {
-      return request.data.query
+// import addons from '@/addons/index'
+import auth from '@/store/modules/server-auth'
+import chat from '@/store/modules/server-chat'
+import roles from '@/store/modules/server-roles'
+import core from '@/store/modules/server-core'
+import { ICoreModule, IAddonModule } from '@/models/server/Module'
+import TModulesNames from '@/models/server/TModulesNames'
+
+type ICoreModules = {
+  [key in TModulesNames]: ICoreModule
+}
+
+type AnyMudule = ICoreModule | IAddonModule
+
+const coreModules: ICoreModules = {
+  'server/chat': chat,
+  'server/auth': auth,
+  'server/roles': roles,
+  'server/core': core
+}
+
+class Recognizer implements ICoreModule {
+  private _getModule (request: ModuleRequest<FreeObject, FreeObject>): AnyMudule {
+    const module = get(coreModules, request.data.query, false)
+    if (module) {
+      return module
     }
-    throw new Error(`Unable to resolve 'query' field in ${request}`)
+    throw new Error(`Unable to resolve '${request.data.query}' field in AllModules`)
   }
 
-  public static resolve (request: ModuleRequest<FreeObject, FreeObject>) {
-    const query = this._query(request)
-    if (has(modules, query)) {
-      return modules[query].process(request)
-    } else {
-      throw new Error(`No such module '${query}' in modules object`)
-    }
+  public process (request: ModuleRequest<FreeObject, FreeObject>) {
+    this._getModule(request).process(request)
   }
 }
 
-export default Recognizer
+export default new Recognizer()
