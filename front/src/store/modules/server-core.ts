@@ -2,7 +2,9 @@ import store from '@/store/index'
 
 import Server from '@/models/server/Server'
 import IData from '@/models/api/IData'
+import ModuleRequest from '@/models/common/ModuleRequest'
 import FreeObject from '@/models/common/FreeObject'
+import Recognizer from '@/helpers/recognizer'
 
 import NPeer from 'peerjs'
 import { Module, VuexModule, Mutation, Action, getModule } from 'vuex-module-decorators'
@@ -18,6 +20,11 @@ export interface IServerModule {
   setServer (server: Server) : void
   create (serverId?: string) : void
   onGotData (payload: OnGotDataPayload) : void
+  process (payload: OnGotDataPayload) : void
+}
+
+export interface ICorePermissions {
+  all?: boolean
 }
 
 @Module({ dynamic: true, store, name: 'server' })
@@ -53,11 +60,15 @@ class ServerModule extends VuexModule implements IServerModule {
   public onGotData (payload: OnGotDataPayload) {
     try {
       console.log('got', payload)
-      // const server = new Server(serverId)
-      // this.context.commit('setServer', server)
+
+      Recognizer.process(payload)
     } catch (err) {
       throw new Error(err)
     }
+  }
+  @Action
+  process (request: ModuleRequest<FreeObject, FreeObject>) {
+
   }
 }
 

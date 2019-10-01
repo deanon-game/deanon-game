@@ -1,22 +1,42 @@
 import store from '@/store'
 
 import Client from '@/models/server/Client'
-import IAuth from '@/models/server/IAuth'
+
+import ModuleRequest from '@/models/common/ModuleRequest'
+import FreeObject from '@/models/common/FreeObject'
 
 import { Module, VuexModule, Mutation, Action, getModule } from 'vuex-module-decorators'
 
 import { has } from 'lodash-es'
 
-type FindClientPayload = {
-  auth: IAuth,
+import RolesModule from '@/store/modules/server-roles'
+import CoreModule from '@/store/modules/server-core'
+
+type DataFindClientPayload = {
   clientId: string
+}
+
+type FindClientPayload = ModuleRequest<DataFindClientPayload, never>
+
+export interface IAuthPermissions {
+  all?: boolean,
+  rename?: {
+    all?: boolean,
+    own?: boolean,
+    other?: boolean
+  },
+  register?: {
+    all?: boolean,
+    user?: boolean
+  }
 }
 
 export interface IAuthModule {
   readonly clients: { [key: string]: Client }
-  addClient (auth: IAuth): void
+  addClient (request: ModuleRequest<FreeObject, FreeObject>): void
   findClientById (id: FindClientPayload): void
-  resolve (auth: IAuth): void
+  registerNewClient (request: ModuleRequest<FreeObject, FreeObject>): void
+  process (request: ModuleRequest<FreeObject, FreeObject>): void
 }
 @Module({ dynamic: true, store, name: 'auth' })
 class AuthModule extends VuexModule implements IAuthModule {
@@ -27,7 +47,7 @@ class AuthModule extends VuexModule implements IAuthModule {
   }
 
   @Mutation
-  public addClient (auth: IAuth) {
+  public addClient (request: ModuleRequest<FreeObject, FreeObject>) {
     // this.cliens[auth.connection.connectionId] = new Client(auth)
   }
 
@@ -36,8 +56,13 @@ class AuthModule extends VuexModule implements IAuthModule {
     // findClient by id
   }
   @Action
-  public resolve (auth: IAuth) {
-    const id: string = auth.connection.connectionId
+  public registerNewClient (request: ModuleRequest<FreeObject, FreeObject>) {
+    if (!CoreModule.server) return
+    RolesModule.hasPermission({
+      caller: request.caller,
+      path: ''
+    })
+    const id: string = request.connection.connectionId
     if (has(this.clients, id)) {
       if (has(this.clients, `${id}.type`)) {
         // state.commit('updateClientData')
@@ -47,6 +72,10 @@ class AuthModule extends VuexModule implements IAuthModule {
       this.context.commit('addClient', id)
       console.log('addClient with id = ', id)
     }
+  }
+  @Action
+  process (request: ModuleRequest<FreeObject, FreeObject>) {
+    return request
   }
 }
 
