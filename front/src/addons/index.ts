@@ -1,9 +1,5 @@
-import chat from './deanon-game'
-import auth from './auth'
+import deanonGame from './deanon-game'
 
-const modules = {
-  chat,
-  auth
+export default {
+  deanonGame
 }
-
-export default modules
