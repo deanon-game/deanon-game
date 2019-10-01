@@ -1,5 +1,5 @@
 import TModulesNames from '@/models/server/TModulesNames'
-import IModules from '@/helpers/recognizer/modules/models/TModulesNames'
+import IModules from '@/addons/models/TModulesNames'
 
 type AllModules = TModulesNames | IModules
 
