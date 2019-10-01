@@ -31,7 +31,7 @@ export interface IAuthPermissions {
 
 export interface IAuthModule {
   readonly clients: { [key: string]: Client }
-  addClient (request: ModuleRequest<FreeObject, FreeObject>): void
+  addClient (client: Client): void
   findClientById (id: FindClientPayload): void
   registerNewClient (request: ModuleRequest<FreeObject, FreeObject>): void
   process (request: ModuleRequest<FreeObject, FreeObject>): void
@@ -45,8 +45,9 @@ class AuthModule extends VuexModule implements IAuthModule {
   }
 
   @Mutation
-  public addClient (request: ModuleRequest<FreeObject, FreeObject>) {
-    // this.cliens[auth.connection.connectionId] =
+  public addClient (client: Client) {
+    console.log('added new client', client)
+    this._clients[client.id] = client
   }
 
   @Action
@@ -61,7 +62,7 @@ class AuthModule extends VuexModule implements IAuthModule {
       path: 'auth.register.user'
     })) return
     console.log(`registerNewClient after request:`, request)
-    this.context.commit('addClient', new Client(request))
+    this.addClient(new Client(request))
   }
   @Action
   public updateClientData (request: ModuleRequest<UserDataParams, never>) {
