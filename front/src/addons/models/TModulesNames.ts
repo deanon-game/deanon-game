@@ -1,3 +1,3 @@
-type Names = 'chat' | 'auth'
+type Names = 'addons/deanonGame'
 
 export default Names
