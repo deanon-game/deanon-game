@@ -54,7 +54,7 @@ class RolesModule extends VuexModule implements IRolesModule {
 
   @Action
   hasPermission (permissionToCheck: PermissionToCheck):boolean {
-    const path = `${permissionToCheck.path.replace(/\//gm, '.')}`
+    const path = permissionToCheck.path
     const cfg = this.permissions[permissionToCheck.caller.role]
 
     let pathArr = path.split('.')

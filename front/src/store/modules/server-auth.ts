@@ -1,13 +1,11 @@
 import store from '@/store'
 
-import Client from '@/models/server/Client'
+import Client, { UserDataParams } from '@/models/server/Client'
 
 import ModuleRequest from '@/models/common/ModuleRequest'
 import FreeObject from '@/models/common/FreeObject'
 
 import { Module, VuexModule, Mutation, Action, getModule } from 'vuex-module-decorators'
-
-import { has } from 'lodash-es'
 
 import RolesModule from '@/store/modules/server-roles'
 import CoreModule from '@/store/modules/server-core'
@@ -48,7 +46,7 @@ class AuthModule extends VuexModule implements IAuthModule {
 
   @Mutation
   public addClient (request: ModuleRequest<FreeObject, FreeObject>) {
-    // this.cliens[auth.connection.connectionId] = new Client(auth)
+    // this.cliens[auth.connection.connectionId] =
   }
 
   @Action
@@ -56,22 +54,20 @@ class AuthModule extends VuexModule implements IAuthModule {
     // findClient by id
   }
   @Action
-  public registerNewClient (request: ModuleRequest<FreeObject, FreeObject>) {
+  public registerNewClient (request: ModuleRequest<never, never>) {
     if (!CoreModule.server) return
-    RolesModule.hasPermission({
+    if (!RolesModule.hasPermission({
       caller: request.caller,
-      path: ''
-    })
-    const id: string = request.connection.connectionId
-    if (has(this.clients, id)) {
-      if (has(this.clients, `${id}.type`)) {
-        // state.commit('updateClientData')
-      }
-      console.log(id)
-    } else {
-      this.context.commit('addClient', id)
-      console.log('addClient with id = ', id)
-    }
+      path: 'auth.register.user'
+    })) return
+    console.log(`registerNewClient after request:`, request)
+    this.context.commit('addClient', new Client(request))
+  }
+  @Action
+  public updateClientData (request: ModuleRequest<UserDataParams, never>) {
+    if (!CoreModule.server) return
+    console.log(`updateClientData after request:`, request)
+    // this.context.commit('addClient', new Client(request))
   }
   @Action
   process (request: ModuleRequest<FreeObject, FreeObject>) {

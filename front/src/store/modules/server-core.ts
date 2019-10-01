@@ -1,7 +1,7 @@
 import store from '@/store/index'
 
 import Server from '@/models/server/Server'
-import IData from '@/models/api/IData'
+import IData from '@/models/api/Data'
 import ModuleRequest from '@/models/common/ModuleRequest'
 import FreeObject from '@/models/common/FreeObject'
 import Recognizer from '@/helpers/recognizer'
@@ -19,7 +19,6 @@ export interface IServerModule {
   readonly linkToConnect: string | null
   setServer (server: Server) : void
   create (serverId?: string) : void
-  onGotData (payload: OnGotDataPayload) : void
   process (payload: OnGotDataPayload) : void
 }
 
@@ -57,18 +56,14 @@ class ServerModule extends VuexModule implements IServerModule {
     }
   }
   @Action
-  public onGotData (payload: OnGotDataPayload) {
+  process (request: ModuleRequest<FreeObject, FreeObject>) {
     try {
-      console.log('got', payload)
+      console.log('got', request)
 
-      Recognizer.process(payload)
+      Recognizer.process(request)
     } catch (err) {
       throw new Error(err)
     }
-  }
-  @Action
-  process (request: ModuleRequest<FreeObject, FreeObject>) {
-
   }
 }
 
