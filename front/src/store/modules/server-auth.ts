@@ -1,6 +1,6 @@
 import store from '@/store'
 
-import Client, { UserDataParams } from '@/models/server/Client'
+import Client from '@/models/server/Client'
 
 import ModuleRequest from '@/models/common/ModuleRequest'
 import FreeObject from '@/models/common/FreeObject'
@@ -9,6 +9,7 @@ import { Module, VuexModule, Mutation, Action, getModule } from 'vuex-module-dec
 
 import RolesModule from '@/store/modules/server-roles'
 import CoreModule from '@/store/modules/server-core'
+import { has } from 'lodash-es'
 
 type DataFindClientPayload = {
   clientId: string
@@ -47,7 +48,7 @@ class AuthModule extends VuexModule implements IAuthModule {
   @Mutation
   public addClient (client: Client) {
     console.log('added new client', client)
-    this._clients[client.id] = client
+    this._clients[client.connection.label] = client
   }
 
   @Action
@@ -61,18 +62,37 @@ class AuthModule extends VuexModule implements IAuthModule {
       caller: request.caller,
       path: 'auth.register.user'
     })) return
-    console.log(`registerNewClient after request:`, request)
+    console.log(`registered new client after request:`, request)
     this.addClient(new Client(request))
   }
+
+  @Mutation
+  public renameClient (request: ModuleRequest<FreeObject, FreeObject>) {
+    console.log(`renameClient`, request)
+    if (
+      request.data.params &&
+      has(request, 'data.params.name')
+    ) {
+      console.log(this._clients, request.connection.label)
+      this._clients[request.connection.label]
+        .rename(request.caller, request.data.params.name)
+    }
+  }
+
   @Action
-  public updateClientData (request: ModuleRequest<UserDataParams, never>) {
+  public updateOwnClientData (request: ModuleRequest<FreeObject, FreeObject>) {
     if (!CoreModule.server) return
-    console.log(`updateClientData after request:`, request)
-    // this.context.commit('addClient', new Client(request))
+    console.log(`updated client data after request:`, request)
+    this.renameClient(request)
   }
   @Action
   process (request: ModuleRequest<FreeObject, FreeObject>) {
-    return request
+    console.log('server/auth/process')
+    switch (request.data.query) {
+      case 'server/auth?updateOwnClientData':
+        this.updateOwnClientData(request)
+        break
+    }
   }
 }
 
