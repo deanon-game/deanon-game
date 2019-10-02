@@ -60,9 +60,8 @@ export default class CreateHost extends Vue {
     const user1 = new User({ name: 'Вася' })
     const user2 = new User({ name: 'Петя' })
 
-    user1.rename(this.$store, user1, 'Фёдор').then(() => {
-      console.log('user1 now is ', user1)
-    })
+    user1.rename(user1, 'Фёдор')
+    console.log('user1 now is ', user1)
 
     const hostId = this.$route.query.hostId
 
