@@ -6,7 +6,7 @@ import FreeObject from '@/models/common/FreeObject'
 
 import AuthModule from '@/store/modules/server-auth'
 import ServerModule from '@/store/modules/server-core'
-import IData from '../api/Data'
+import IData from '@/models/api/Data'
 
 export default class Server extends User {
   constructor (id?: string) {
