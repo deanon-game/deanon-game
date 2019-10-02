@@ -25,7 +25,7 @@ export default class Server extends User {
       )
       connection.on('data', (data: IData<FreeObject, FreeObject>) => {
         if (!ServerModule.server) return
-        ServerModule.process(
+        ServerModule.onGotData(
           new ModuleRequest<FreeObject, FreeObject>(
             ServerModule.server,
             connection,
