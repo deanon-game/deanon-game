@@ -1,7 +1,7 @@
 type Names =
-'server/chat' |
-'server/auth' |
-'server/roles' |
-'server/core'
+'chat' |
+'auth' |
+'roles' |
+'core'
 
 export default Names
