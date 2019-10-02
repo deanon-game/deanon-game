@@ -3,6 +3,7 @@ import { Module, VuexModule, Mutation, Action, getModule } from 'vuex-module-dec
 
 import Peer from 'peerjs'
 import p2pConfig from '@/helpers/p2p.config.ts'
+import unreact from '@/helpers/unreact'
 
 export interface IClientModule {}
 
@@ -49,7 +50,7 @@ class ClientModule extends VuexModule implements IClientModule {
   send (payload: any) {
     console.log('send', payload)
     if (this.connection) {
-      this.connection.send(payload)
+      this.connection.send(unreact(payload))
     }
   }
 }

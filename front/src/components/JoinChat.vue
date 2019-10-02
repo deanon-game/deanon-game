@@ -12,6 +12,8 @@ import { Vue, Component, Prop } from 'vue-property-decorator'
 import ChatMessage from './ChatMessage.vue'
 
 import ClientModule, { ConnectionPayload } from '@/store/modules/client-core'
+import Data from '@/models/api/Data'
+import { UserDataParams } from '@/models/server/User'
 
 @Component({
   components: {
@@ -31,13 +33,18 @@ export default class JoinChat extends Vue {
     const payload: ConnectionPayload = {
       serverId: this.serverId
     }
-    ClientModule.connect(payload)
+    ClientModule.connect(payload).then(() => {
+      this.onJoin()
+    })
   }
   onJoin () {
-    ClientModule.send({
-      type: 'chat',
-      message: 'hello :)'
+    const data = new Data<UserDataParams, never>({
+      query: 'server/auth?updateOwnClientData',
+      params: {
+        name: 'называйте меня ИВАН'
+      }
     })
+    ClientModule.send(data)
   }
 }
 </script>
