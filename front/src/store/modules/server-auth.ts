@@ -1,22 +1,40 @@
 import store from '@/store'
 
-import Client from '@/models/server/Client'
-import IAuth from '@/models/server/IAuth'
+import Client, { UserDataParams } from '@/models/server/Client'
+
+import ModuleRequest from '@/models/common/ModuleRequest'
+import FreeObject from '@/models/common/FreeObject'
 
 import { Module, VuexModule, Mutation, Action, getModule } from 'vuex-module-decorators'
 
-import { has } from 'lodash-es'
+import RolesModule from '@/store/modules/server-roles'
+import CoreModule from '@/store/modules/server-core'
 
-type FindClientPayload = {
-  auth: IAuth,
+type DataFindClientPayload = {
   clientId: string
+}
+
+type FindClientPayload = ModuleRequest<DataFindClientPayload, never>
+
+export interface IAuthPermissions {
+  all?: boolean,
+  rename?: {
+    all?: boolean,
+    own?: boolean,
+    other?: boolean
+  },
+  register?: {
+    all?: boolean,
+    user?: boolean
+  }
 }
 
 export interface IAuthModule {
   readonly clients: { [key: string]: Client }
-  addClient (auth: IAuth): void
+  addClient (request: ModuleRequest<FreeObject, FreeObject>): void
   findClientById (id: FindClientPayload): void
-  resolve (auth: IAuth): void
+  registerNewClient (request: ModuleRequest<FreeObject, FreeObject>): void
+  process (request: ModuleRequest<FreeObject, FreeObject>): void
 }
 @Module({ dynamic: true, store, name: 'auth' })
 class AuthModule extends VuexModule implements IAuthModule {
@@ -27,8 +45,8 @@ class AuthModule extends VuexModule implements IAuthModule {
   }
 
   @Mutation
-  public addClient (auth: IAuth) {
-    // this.cliens[auth.connection.connectionId] = new Client(auth)
+  public addClient (request: ModuleRequest<FreeObject, FreeObject>) {
+    // this.cliens[auth.connection.connectionId] =
   }
 
   @Action
@@ -36,17 +54,24 @@ class AuthModule extends VuexModule implements IAuthModule {
     // findClient by id
   }
   @Action
-  public resolve (auth: IAuth) {
-    const id: string = auth.connection.connectionId
-    if (has(this.clients, id)) {
-      if (has(this.clients, `${id}.type`)) {
-        // state.commit('updateClientData')
-      }
-      console.log(id)
-    } else {
-      this.context.commit('addClient', id)
-      console.log('addClient with id = ', id)
-    }
+  public registerNewClient (request: ModuleRequest<never, never>) {
+    if (!CoreModule.server) return
+    if (!RolesModule.hasPermission({
+      caller: request.caller,
+      path: 'auth.register.user'
+    })) return
+    console.log(`registerNewClient after request:`, request)
+    this.context.commit('addClient', new Client(request))
+  }
+  @Action
+  public updateClientData (request: ModuleRequest<UserDataParams, never>) {
+    if (!CoreModule.server) return
+    console.log(`updateClientData after request:`, request)
+    // this.context.commit('addClient', new Client(request))
+  }
+  @Action
+  process (request: ModuleRequest<FreeObject, FreeObject>) {
+    return request
   }
 }
 
