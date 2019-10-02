@@ -9,7 +9,9 @@ import { Module, VuexModule, Mutation, Action, getModule } from 'vuex-module-dec
 
 import RolesModule from '@/store/modules/server-roles'
 import CoreModule from '@/store/modules/server-core'
+import ChatModule from '@/store/modules/server-chat'
 import { has } from 'lodash-es'
+import Message from '@/models/server/Message'
 
 type DataFindClientPayload = {
   clientId: string
@@ -69,6 +71,7 @@ class AuthModule extends VuexModule implements IAuthModule {
   @Mutation
   public renameClient (request: ModuleRequest<FreeObject, FreeObject>) {
     console.log(`renameClient`, request)
+    if (!CoreModule.server) return
     if (
       request.data.params &&
       has(request, 'data.params.name')
@@ -76,6 +79,12 @@ class AuthModule extends VuexModule implements IAuthModule {
       console.log(this._clients, request.connection.label)
       this._clients[request.connection.label]
         .rename(request.caller, request.data.params.name)
+      ChatModule.addMyMessage(
+        new Message(
+          CoreModule.server,
+          `Поприветствуем нового пользователя с именем "${request.data.params.name}"`
+        )
+      )
     }
   }
 

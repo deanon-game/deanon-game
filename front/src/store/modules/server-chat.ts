@@ -14,8 +14,7 @@ export interface IChatPermissions {
 export interface IChatModule extends ICoreModule {
   readonly count: number
   readonly messages: {[key: string]: Message}
-  incrementCount (): void
-  addMessage (message: Message): void
+  addMyMessage (message: Message): void
 }
 
 @Module({ dynamic: true, store, name: 'chat' })
@@ -32,14 +31,18 @@ class ChatModule extends VuexModule implements IChatModule {
   }
 
   @Mutation
-  incrementCount () {
-    this._count += 1
+  private incrementCount () {
+    this._count = this._count + 1
+  }
+  @Mutation
+  private addMessage (message: Message) {
+    this._messages[this._count] = message
   }
 
-  @Mutation
-  addMessage (message: Message) {
+  @Action
+  addMyMessage (message: Message) {
     // TODO: add permission check
-    this._messages[this._count] = message
+    this.addMessage(message)
     this.incrementCount()
   }
 
