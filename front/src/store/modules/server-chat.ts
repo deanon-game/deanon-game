@@ -38,12 +38,14 @@ class ChatModule extends VuexModule implements IChatModule {
 
   @Mutation
   addMessage (message: Message) {
+    // TODO: add permission check
     this._messages[this._count] = message
     this.incrementCount()
   }
 
   @Action
   process (request: ModuleRequest<FreeObject, FreeObject>) {
+    // TODO: add permission check
     return request
   }
 }
