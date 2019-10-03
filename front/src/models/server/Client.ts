@@ -3,10 +3,6 @@ import ModuleRequest from '@/models/common/ModuleRequest'
 import Connection from '@/models/common/Connection'
 import { get } from 'lodash-es'
 
-export interface UserDataParams {
-  name: string
-}
-
 export default class Client extends User {
   public connection: Connection
   constructor (request: ModuleRequest<never, never>) {

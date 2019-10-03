@@ -19,7 +19,7 @@ export interface IServerModule {
   readonly linkToConnect: string | null
   setServer (server: Server) : void
   create (serverId?: string) : void
-  process (payload: OnGotDataPayload) : void
+  onGotData (payload: OnGotDataPayload) : void
 }
 
 export interface ICorePermissions {
@@ -50,13 +50,13 @@ class ServerModule extends VuexModule implements IServerModule {
   public create (serverId?: string) {
     try {
       const server = new Server(serverId)
-      this.context.commit('setServer', server)
+      this.setServer(server)
     } catch (err) {
       throw new Error(err)
     }
   }
   @Action
-  process (request: ModuleRequest<FreeObject, FreeObject>) {
+  onGotData (request: ModuleRequest<FreeObject, FreeObject>) {
     try {
       console.log('got', request)
 
@@ -64,6 +64,10 @@ class ServerModule extends VuexModule implements IServerModule {
     } catch (err) {
       throw new Error(err)
     }
+  }
+
+  @Action
+  process (request: ModuleRequest<FreeObject, FreeObject>) {
   }
 }
 
