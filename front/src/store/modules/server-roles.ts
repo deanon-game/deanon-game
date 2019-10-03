@@ -7,6 +7,7 @@ import { Module, VuexModule, Mutation, Action, getModule } from 'vuex-module-dec
 
 import ModuleRequest from '@/models/common/ModuleRequest'
 import FreeObject from '@/models/common/FreeObject'
+import { LogCall } from '@/helpers/decorators/log'
 
 interface PermissionToCheck {
   caller: User,
@@ -53,6 +54,7 @@ class RolesModule extends VuexModule implements IRolesModule {
   }
 
   @Action
+  @LogCall
   hasPermission (permissionToCheck: PermissionToCheck):boolean {
     const path = permissionToCheck.path
     const cfg = this.permissions[permissionToCheck.caller.role]
@@ -78,6 +80,7 @@ class RolesModule extends VuexModule implements IRolesModule {
     return false
   }
   @Action
+  @LogCall
   process (request: ModuleRequest<FreeObject, FreeObject>) {
     return request
   }

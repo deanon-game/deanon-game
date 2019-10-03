@@ -4,6 +4,7 @@ import { Module, VuexModule, Mutation, Action, getModule } from 'vuex-module-dec
 import Peer from 'peerjs'
 import p2pConfig from '@/helpers/p2p.config.ts'
 import unreact from '@/helpers/unreact'
+import { LogCall } from '@/helpers/decorators/log'
 
 export interface IClientModule {}
 
@@ -17,16 +18,18 @@ export interface ConnectionPayload {
 class ClientModule extends VuexModule implements IClientModule {
   private _connection: Connection | null = null
 
-  @Mutation
-  setConnection (connection: Connection) {
-    this._connection = connection
-  }
-
   get connection (): Connection | null {
     return this._connection
   }
 
+  @Mutation
+  @LogCall
+  setConnection (connection: Connection) {
+    this._connection = connection
+  }
+
   @Action
+  @LogCall
   connect (connectionPayload:ConnectionPayload) {
     return new Promise((resolve, reject) => {
       try {
@@ -47,8 +50,8 @@ class ClientModule extends VuexModule implements IClientModule {
   }
 
   @Action
+  @LogCall
   send (payload: any) {
-    console.log('send', payload)
     if (this.connection) {
       this.connection.send(unreact(payload))
     }

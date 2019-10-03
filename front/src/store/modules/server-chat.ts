@@ -7,6 +7,7 @@ import Message from '@/models/server/Message'
 import { ICoreModule } from '@/models/server/Module'
 
 import defaultLogo from '@/assets/anonymous.svg'
+import { LogCall } from '@/helpers/decorators/log'
 
 export interface IChatPermissions {
   all?: boolean
@@ -31,15 +32,18 @@ class ChatModule extends VuexModule implements IChatModule {
   }
 
   @Mutation
+  @LogCall
   private incrementCount () {
     this._count = this._count + 1
   }
   @Mutation
+  @LogCall
   private addMessage (message: Message) {
     this._messages[this._count] = message
   }
 
   @Action
+  @LogCall
   addMyMessage (message: Message) {
     // TODO: add permission check
     this.addMessage(message)
@@ -47,6 +51,7 @@ class ChatModule extends VuexModule implements IChatModule {
   }
 
   @Action
+  @LogCall
   process (request: ModuleRequest<FreeObject, FreeObject>) {
     // TODO: add permission check
     return request

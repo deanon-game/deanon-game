@@ -8,6 +8,7 @@ import Recognizer from '@/helpers/recognizer'
 
 import NPeer from 'peerjs'
 import { Module, VuexModule, Mutation, Action, getModule } from 'vuex-module-decorators'
+import { LogCall } from '@/helpers/decorators/log'
 
 interface OnGotDataPayload {
   connection: NPeer.DataConnection
@@ -42,11 +43,13 @@ class ServerModule extends VuexModule implements IServerModule {
   }
 
   @Mutation
+  @LogCall
   public setServer (server: Server) {
     this._server = server
   }
 
   @Action
+  @LogCall
   public create (serverId?: string) {
     try {
       const server = new Server(serverId)
@@ -56,10 +59,9 @@ class ServerModule extends VuexModule implements IServerModule {
     }
   }
   @Action
+  @LogCall
   onGotData (request: ModuleRequest<FreeObject, FreeObject>) {
     try {
-      console.log('got', request)
-
       Recognizer.process(request)
     } catch (err) {
       throw new Error(err)
@@ -67,6 +69,7 @@ class ServerModule extends VuexModule implements IServerModule {
   }
 
   @Action
+  @LogCall
   process (request: ModuleRequest<FreeObject, FreeObject>) {
   }
 }

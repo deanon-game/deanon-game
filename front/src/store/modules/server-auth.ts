@@ -12,6 +12,7 @@ import CoreModule from '@/store/modules/server-core'
 import ChatModule from '@/store/modules/server-chat'
 import { has } from 'lodash-es'
 import Message from '@/models/server/Message'
+import { LogCall } from '@/helpers/decorators/log'
 
 type DataFindClientPayload = {
   clientId: string
@@ -48,35 +49,35 @@ class AuthModule extends VuexModule implements IAuthModule {
   }
 
   @Mutation
+  @LogCall
   public addClient (client: Client) {
-    console.log('added new client', client)
     this._clients[client.connection.label] = client
   }
 
   @Action
+  @LogCall
   public findClientById (id: FindClientPayload) {
     // findClient by id
   }
   @Action
+  @LogCall
   public registerNewClient (request: ModuleRequest<never, never>) {
     if (!CoreModule.server) return
     if (!RolesModule.hasPermission({
       caller: request.caller,
       path: 'auth.register.user'
     })) return
-    console.log(`registered new client after request:`, request)
     this.addClient(new Client(request))
   }
 
   @Mutation
+  @LogCall
   public renameClient (request: ModuleRequest<FreeObject, FreeObject>) {
-    console.log(`renameClient`, request)
     if (!CoreModule.server) return
     if (
       request.data.params &&
       has(request, 'data.params.name')
     ) {
-      console.log(this._clients, request.connection.label)
       this._clients[request.connection.label]
         .rename(request.caller, request.data.params.name)
       ChatModule.addMyMessage(
@@ -89,14 +90,14 @@ class AuthModule extends VuexModule implements IAuthModule {
   }
 
   @Action
+  @LogCall
   public updateOwnClientData (request: ModuleRequest<FreeObject, FreeObject>) {
     if (!CoreModule.server) return
-    console.log(`updated client data after request:`, request)
     this.renameClient(request)
   }
   @Action
+  @LogCall
   process (request: ModuleRequest<FreeObject, FreeObject>) {
-    console.log('server/auth/process')
     switch (request.data.query) {
       case 'server/auth?updateOwnClientData':
         this.updateOwnClientData(request)
