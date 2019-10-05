@@ -1,12 +1,11 @@
 import User from '@/models/server/User'
 import Peer from 'peerjs'
 import p2pConfig from '@/helpers/p2p.config'
-import ModuleRequest from '@/models/common/ModuleRequest'
-import FreeObject from '@/models/common/FreeObject'
+import ApiRequest from '@/models/api/ApiRequest'
 
 import AuthModule from '@/store/modules/server-auth'
 import ServerModule from '@/store/modules/server-core'
-import IData from '@/models/api/Data'
+import Client from './Client'
 
 export default class Server extends User {
   constructor (id?: string) {
@@ -17,20 +16,17 @@ export default class Server extends User {
     })
     peer.on('connection', (connection) => {
       if (!ServerModule.server) return
-      AuthModule.registerNewClient(
-        new ModuleRequest<never, never>(
-          ServerModule.server,
-          connection
-        )
-      )
-      connection.on('data', (data: IData<FreeObject, FreeObject>) => {
+      AuthModule.registerNewClient(connection)
+      connection.on('data', (request: any) => {
         if (!ServerModule.server) return
-        ServerModule.onGotData(
-          new ModuleRequest<FreeObject, FreeObject>(
-            ServerModule.server,
-            connection,
-            data
-          ))
+        AuthModule.getClientByConnection(connection)
+          .then((caller:Client | null) => {
+            if (caller) {
+              ServerModule.onGotData(
+                new ApiRequest(caller, request)
+              )
+            }
+          })
       })
     })
   }

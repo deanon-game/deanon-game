@@ -9,12 +9,12 @@
     <div v-else>
       Генерация ссылки...
     </div>
-    <DeChat />
+    <Chat />
   </div>
 </template>
 
 <script lang="ts">
-import DeChat from '@/components/Chat.vue'
+import Chat from '@/components/Chat.vue'
 import User from '@/models/server/User.ts'
 import nanoid from 'nanoid'
 
@@ -26,7 +26,7 @@ import { Vue, Component, Watch } from 'vue-property-decorator'
 
 @Component({
   components: {
-    DeChat
+    Chat
   }
 })
 export default class CreateHost extends Vue {
@@ -57,12 +57,6 @@ export default class CreateHost extends Vue {
     })
   }
   private createGame () {
-    const user1 = new User({ name: 'Вася' })
-    const user2 = new User({ name: 'Петя' })
-
-    user1.rename(user1, 'Фёдор')
-    console.log('user1 now is ', user1)
-
     const hostId = this.$route.query.hostId
 
     if (typeof (hostId) === 'string') {

@@ -1,12 +1,17 @@
 import User from '@/models/server/User'
-import ModuleRequest from '@/models/common/ModuleRequest'
-import Connection from '@/models/common/Connection'
-import { get } from 'lodash-es'
+import Connection from '@/models/api/Connection'
 
-export default class Client extends User {
-  public connection: Connection
-  constructor (request: ModuleRequest<never, never>) {
-    super({ name: get(request.data, 'params.name', '') })
-    this.connection = request.connection
+export interface IClient {
+  readonly connection: Connection
+}
+
+export default class Client extends User implements IClient {
+  public _connection: Connection
+  get connection () {
+    return this._connection
+  }
+  constructor (connection: Connection) {
+    super({})
+    this._connection = connection
   }
 }

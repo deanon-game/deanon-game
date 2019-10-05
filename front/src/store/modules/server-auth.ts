@@ -2,43 +2,38 @@ import store from '@/store'
 
 import Client from '@/models/server/Client'
 
-import ModuleRequest from '@/models/common/ModuleRequest'
-import FreeObject from '@/models/common/FreeObject'
+import ApiRequest from '@/models/api/ApiRequest'
 
 import { Module, VuexModule, Mutation, Action, getModule } from 'vuex-module-decorators'
 
-import RolesModule from '@/store/modules/server-roles'
 import CoreModule from '@/store/modules/server-core'
 import ChatModule from '@/store/modules/server-chat'
-import { has } from 'lodash-es'
+import { get, has } from 'lodash-es'
 import Message from '@/models/server/Message'
-
-type DataFindClientPayload = {
-  clientId: string
-}
-
-type FindClientPayload = ModuleRequest<DataFindClientPayload, never>
+import { LogCall } from '@/helpers/decorators/log'
+import { CheckPermission } from '@/helpers/decorators/check'
+import Connection from '@/models/api/Connection'
 
 export interface IAuthPermissions {
-  all?: boolean,
-  rename?: {
-    all?: boolean,
-    own?: boolean,
-    other?: boolean
-  },
-  register?: {
-    all?: boolean,
-    user?: boolean
-  }
+  all?: boolean
+  registerNewClient?: boolean
+  _renameMe?: boolean
 }
 
 export interface IAuthModule {
   readonly clients: { [key: string]: Client }
-  addClient (client: Client): void
-  findClientById (id: FindClientPayload): void
-  registerNewClient (request: ModuleRequest<FreeObject, FreeObject>): void
-  process (request: ModuleRequest<FreeObject, FreeObject>): void
+  process (request: ApiRequest): void
 }
+
+// interface FindClientData {
+//   clientId: string
+// }
+
+interface IRenameClientPayload {
+  client: Client,
+  newName: string
+}
+
 @Module({ dynamic: true, store, name: 'auth' })
 class AuthModule extends VuexModule implements IAuthModule {
   private _clients: { [key: string]: Client } = {}
@@ -48,58 +43,86 @@ class AuthModule extends VuexModule implements IAuthModule {
   }
 
   @Mutation
-  public addClient (client: Client) {
-    console.log('added new client', client)
+  @LogCall
+  private addClient (client: Client) {
     this._clients[client.connection.label] = client
   }
 
-  @Action
-  public findClientById (id: FindClientPayload) {
-    // findClient by id
-  }
-  @Action
-  public registerNewClient (request: ModuleRequest<never, never>) {
-    if (!CoreModule.server) return
-    if (!RolesModule.hasPermission({
-      caller: request.caller,
-      path: 'auth.register.user'
-    })) return
-    console.log(`registered new client after request:`, request)
-    this.addClient(new Client(request))
+  @Mutation
+  @LogCall
+  private rename (payload: IRenameClientPayload) {
+    if (
+      payload.client &&
+      payload.newName
+    ) {
+      this._clients[payload.client.connection.label].name = payload.newName
+    }
   }
 
-  @Mutation
-  public renameClient (request: ModuleRequest<FreeObject, FreeObject>) {
-    console.log(`renameClient`, request)
-    if (!CoreModule.server) return
-    if (
-      request.data.params &&
-      has(request, 'data.params.name')
-    ) {
-      console.log(this._clients, request.connection.label)
-      this._clients[request.connection.label]
-        .rename(request.caller, request.data.params.name)
+  // @Action
+  // @LogCall
+  // @CheckPermission
+  // public renameClient (request: ApiRequest<IRenameClientData, FreeObject>) {
+  //   if (!CoreModule.server) return
+  //   if (
+  //     request.data.params &&
+  //     has(request, 'data.params.name')
+  //   ) {
+  //     const oldName = this._clients[request.data.params.client.connection.label].name
+  //     // TODO: получить в запросе кого на кого переименовывать!!!
+  //     ChatModule.addMyMessage(
+  //       new Message(
+  //         CoreModule.server,
+  //         `Пользователь который раньше был "${oldName || 'без имени'}" переименован в "${request.data.params.name}"`
+  //       )
+  //     )
+  //   }
+  // }
+
+  @Action
+  @LogCall
+  @CheckPermission
+  private _renameMe (request: ApiRequest) {
+    if (!has(request, 'data.params.name')) throw new Error('request has no "data.params.newName"')
+    if (!(request.caller instanceof Client)) throw new Error('caller is not a Client')
+    const oldName = request.caller.name
+    this.rename({
+      client: request.caller,
+      newName: request.data.params.name
+    })
+    if (CoreModule.server) {
       ChatModule.addMyMessage(
         new Message(
           CoreModule.server,
-          `Поприветствуем нового пользователя с именем "${request.data.params.name}"`
+          `Пользователь переименовал себя ${
+            oldName ? 'из "' + oldName + '"' : ''
+          } в ${request.data.params.name}`
         )
       )
     }
   }
 
   @Action
-  public updateOwnClientData (request: ModuleRequest<FreeObject, FreeObject>) {
+  @LogCall
+  public registerNewClient (connection: Connection) {
     if (!CoreModule.server) return
-    console.log(`updated client data after request:`, request)
-    this.renameClient(request)
+    this.addClient(new Client(connection))
   }
+
   @Action
-  process (request: ModuleRequest<FreeObject, FreeObject>) {
-    console.log('server/auth/process')
-    switch (request.data.query) {
-      case 'server/auth?updateOwnClientData':
-        this.updateOwnClientData(request)
+  @LogCall
+  public getClientByConnection (connection: Connection): Promise<Client | null> {
+    return new Promise((resolve) => {
+      resolve(get(this.clients, connection.label, null))
+    })
+  }
+
+  @Action
+  @LogCall
+  process (request: ApiRequest) {
+    switch (request.query) {
+      case 'server/auth?renameMe':
+        this._renameMe(request)
         break
     }
   }

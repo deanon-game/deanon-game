@@ -1,7 +1,6 @@
 type Names =
 'chat' |
 'auth' |
-'roles' |
-'core'
+'roles'
 
 export default Names
