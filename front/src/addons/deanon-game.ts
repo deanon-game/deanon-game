@@ -1,9 +1,8 @@
-import IModule from './models/IModule'
-import ModuleRequest from '@/models/common/ModuleRequest'
-import FreeObject from '@/models/common/FreeObject'
+import { IAddonModule } from '@/models/server/Module'
+import ApiRequest from '@/models/api/ApiRequest'
 
-class DeanonGame implements IModule<FreeObject, FreeObject> {
-  public process (request: ModuleRequest<FreeObject, FreeObject>):ModuleRequest<FreeObject, FreeObject> {
+class DeanonGame implements IAddonModule {
+  public process (request: ApiRequest):ApiRequest {
     console.log('deanonGame', request)
     return request
   }

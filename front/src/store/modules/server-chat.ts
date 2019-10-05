@@ -1,8 +1,8 @@
 import store from '@/store/index'
+import Vue from 'vue'
 import { Module, VuexModule, Mutation, Action, getModule } from 'vuex-module-decorators'
 
-import ModuleRequest from '@/models/common/ModuleRequest'
-import FreeObject from '@/models/common/FreeObject'
+import ApiRequest from '@/models/api/ApiRequest'
 import Message from '@/models/server/Message'
 import { ICoreModule } from '@/models/server/Module'
 
@@ -39,7 +39,7 @@ class ChatModule extends VuexModule implements IChatModule {
   @Mutation
   @LogCall
   private addMessage (message: Message) {
-    this._messages[this._count] = message
+    Vue.set(this._messages, this._count, message)
   }
 
   @Action
@@ -52,7 +52,7 @@ class ChatModule extends VuexModule implements IChatModule {
 
   @Action
   @LogCall
-  process (request: ModuleRequest<FreeObject, FreeObject>) {
+  process (request: ApiRequest) {
     // TODO: add permission check
     return request
   }

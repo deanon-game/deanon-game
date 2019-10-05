@@ -24,21 +24,4 @@ export default class User {
     this.role = role || 'client'
     this.id = id || nanoid()
   }
-
-  public rename (caller: User, newName: string) {
-    console.log(`try to rename `, this, ` to ${newName}`)
-    const renameType = this.id === caller.id ? 'own' : 'other'
-    const hasRenamePermission = true
-    RolesModule.hasPermission({
-      caller,
-      path: `auth.rename.${renameType}`
-    })
-    if (!hasRenamePermission) {
-      throw new ServerError({
-        message: `RenameError: Permission to change ${renameType} username was denied.`,
-        caller
-      })
-    }
-    this.name = newName
-  }
 }

@@ -2,8 +2,7 @@ import store from '@/store/index'
 
 import Server from '@/models/server/Server'
 import IData from '@/models/api/Data'
-import ModuleRequest from '@/models/common/ModuleRequest'
-import FreeObject from '@/models/common/FreeObject'
+import ApiRequest from '@/models/api/ApiRequest'
 import Recognizer from '@/helpers/recognizer'
 
 import NPeer from 'peerjs'
@@ -12,7 +11,7 @@ import { LogCall } from '@/helpers/decorators/log'
 
 interface OnGotDataPayload {
   connection: NPeer.DataConnection
-  data: IData<FreeObject, FreeObject>
+  data: IData<any, any>
 }
 
 export interface IServerModule {
@@ -23,12 +22,8 @@ export interface IServerModule {
   onGotData (payload: OnGotDataPayload) : void
 }
 
-export interface ICorePermissions {
-  all?: boolean
-}
-
 @Module({ dynamic: true, store, name: 'server' })
-class ServerModule extends VuexModule implements IServerModule {
+class ServerModule extends VuexModule {
   private _server: Server | null = null
 
   get server (): Server | null {
@@ -60,17 +55,12 @@ class ServerModule extends VuexModule implements IServerModule {
   }
   @Action
   @LogCall
-  onGotData (request: ModuleRequest<FreeObject, FreeObject>) {
+  onGotData (request: ApiRequest) {
     try {
       Recognizer.process(request)
     } catch (err) {
       throw new Error(err)
     }
-  }
-
-  @Action
-  @LogCall
-  process (request: ModuleRequest<FreeObject, FreeObject>) {
   }
 }
 

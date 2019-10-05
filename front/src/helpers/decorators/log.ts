@@ -6,7 +6,7 @@ export function LogCall (target: Object, methodName: string, descriptor: Propert
   descriptor.value = function (...args:any) {
     const className = target.constructor.name
     let returnValue = originalMethod.apply(this, args)
-    console.dir(`called $store/${className}/${methodName}
+    console.log(`called $store/${className}/${methodName}
     with args:`, args,
     `\nreturned:`, returnValue)
     return returnValue

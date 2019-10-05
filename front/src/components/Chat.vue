@@ -10,7 +10,8 @@
 
 <script lang="ts">
 import { Vue, Component } from 'vue-property-decorator'
-import ChatMessage from './ChatMessage.vue'
+import ChatMessage from '@/components/ChatMessage.vue'
+import ChatModule from '@/store/modules/server-chat'
 
 @Component({
   components: {
@@ -19,7 +20,7 @@ import ChatMessage from './ChatMessage.vue'
 })
 export default class Chat extends Vue {
   get messages () {
-    return this.$store.getters['server/messages']
+    return ChatModule.messages
   }
 }
 </script>
