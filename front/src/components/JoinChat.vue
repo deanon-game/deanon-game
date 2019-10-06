@@ -1,9 +1,6 @@
 
 <template>
   <v-container>
-    <v-btn @click="onJoin">
-      Присоединиться
-    </v-btn>
     <Chat />
   </v-container>
 </template>

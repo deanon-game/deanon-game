@@ -23,6 +23,7 @@ import Server from '@/models/server/Server'
 import ServerModule from '@/store/modules/server-core'
 
 import { Vue, Component, Watch } from 'vue-property-decorator'
+import { isNil, get } from 'lodash-es'
 
 @Component({
   components: {
@@ -30,7 +31,7 @@ import { Vue, Component, Watch } from 'vue-property-decorator'
   }
 })
 export default class CreateHost extends Vue {
-  created () {
+  mounted () {
     this.createGame()
   }
 
@@ -40,10 +41,13 @@ export default class CreateHost extends Vue {
   get server () {
     return ServerModule.server
   }
+  get existingHostId () {
+    return get(this.$route, 'query.hostId', null)
+  }
 
   @Watch('server')
   function () {
-    if (this.server) {
+    if (this.server && isNil(this.existingHostId)) {
       this.changePath(this.server.id)
     }
   }
@@ -57,10 +61,8 @@ export default class CreateHost extends Vue {
     })
   }
   private createGame () {
-    const hostId = this.$route.query.hostId
-
-    if (typeof (hostId) === 'string') {
-      ServerModule.create(hostId)
+    if (!isNil(this.existingHostId)) {
+      ServerModule.create(this.existingHostId)
     } else {
       ServerModule.create()
     }
