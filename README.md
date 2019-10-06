@@ -1,3 +1,3 @@
-# pygmalemon
+# pygmalemon 🍋
 
-Smart chatting with friends!
+Be close to your friends in peer to peer chat!
