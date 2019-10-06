@@ -37,14 +37,12 @@ import ChatMessage from '@/components/ChatMessage.vue'
 import ClientChatModule from '@/store/modules/client-chat'
 import Message from '@/models/server/Message'
 import { IChatMessages } from '@/models/api/ChatMessages'
-import VirtualList from 'vue-virtual-scroll-list'
 import ClientModule, { ConnectionPayload } from '@/store/modules/client-core'
 import { IClientRequest } from '@/models/client/ClientRequest'
 
 @Component({
   components: {
-    ChatMessage,
-    VirtualList
+    ChatMessage
   }
 })
 export default class Chat extends Vue {
