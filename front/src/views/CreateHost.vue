@@ -31,7 +31,7 @@ import { isNil, get } from 'lodash-es'
   }
 })
 export default class CreateHost extends Vue {
-  created () {
+  mounted () {
     this.createGame()
   }
 
@@ -61,7 +61,7 @@ export default class CreateHost extends Vue {
     })
   }
   private createGame () {
-    if (isNil(!this.existingHostId)) {
+    if (!isNil(this.existingHostId)) {
       ServerModule.create(this.existingHostId)
     } else {
       ServerModule.create()

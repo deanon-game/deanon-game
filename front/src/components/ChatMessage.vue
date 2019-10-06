@@ -14,7 +14,7 @@
     </v-col>
     <v-col cols="11">
       <div class="title">
-        {{ message.user.name }}
+        {{ message.user.name || message.user.id }}
       </div>
       <div>
         {{ message.text }}
