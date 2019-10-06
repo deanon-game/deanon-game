@@ -11,7 +11,9 @@
 <script lang="ts">
 import { Vue, Component } from 'vue-property-decorator'
 import ChatMessage from '@/components/ChatMessage.vue'
-import ChatModule from '@/store/modules/server-chat'
+import ClientChatModule from '@/store/modules/client-chat'
+import Message from '@/models/server/Message'
+import { IChatMessages } from '@/models/api/ChatMessages'
 
 @Component({
   components: {
@@ -19,8 +21,8 @@ import ChatModule from '@/store/modules/server-chat'
   }
 })
 export default class Chat extends Vue {
-  get messages () {
-    return ChatModule.messages
+  get messages (): IChatMessages {
+    return ClientChatModule.clientMessages
   }
 }
 </script>

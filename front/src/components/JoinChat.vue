@@ -4,6 +4,7 @@
     <v-btn @click="onJoin">
       Присоединиться
     </v-btn>
+    <Chat />
   </v-container>
 </template>
 
@@ -13,10 +14,12 @@ import ChatMessage from './ChatMessage.vue'
 
 import ClientModule, { ConnectionPayload } from '@/store/modules/client-core'
 import { IClientRequest } from '@/models/client/ClientRequest'
+import Chat from '@/components/Chat.vue'
 
 @Component({
   components: {
-    ChatMessage
+    ChatMessage,
+    Chat
   }
 })
 export default class JoinChat extends Vue {

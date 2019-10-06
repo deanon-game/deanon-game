@@ -44,13 +44,7 @@ class AuthModule extends VuexModule implements IAuthModule {
 
   @Mutation
   @LogCall
-  private addClient (client: Client) {
-    this._clients[client.connection.label] = client
-  }
-
-  @Mutation
-  @LogCall
-  private rename (payload: IRenameClientPayload) {
+  public rename (payload: IRenameClientPayload) {
     if (
       payload.client &&
       payload.newName
@@ -58,26 +52,6 @@ class AuthModule extends VuexModule implements IAuthModule {
       this._clients[payload.client.connection.label].name = payload.newName
     }
   }
-
-  // @Action
-  // @LogCall
-  // @CheckPermission
-  // public renameClient (request: ApiRequest<IRenameClientData, FreeObject>) {
-  //   if (!CoreModule.server) return
-  //   if (
-  //     request.data.params &&
-  //     has(request, 'data.params.name')
-  //   ) {
-  //     const oldName = this._clients[request.data.params.client.connection.label].name
-  //     // TODO: получить в запросе кого на кого переименовывать!!!
-  //     ChatModule.addMyMessage(
-  //       new Message(
-  //         CoreModule.server,
-  //         `Пользователь который раньше был "${oldName || 'без имени'}" переименован в "${request.data.params.name}"`
-  //       )
-  //     )
-  //   }
-  // }
 
   @Action
   @LogCall
@@ -96,17 +70,23 @@ class AuthModule extends VuexModule implements IAuthModule {
           CoreModule.server,
           `Пользователь переименовал себя ${
             oldName ? 'из "' + oldName + '"' : ''
-          } в ${request.data.params.name}`
+          } в "${request.data.params.name}"`
         )
       )
     }
+  }
+
+  @Mutation
+  @LogCall
+  private _addClient (client: Client) {
+    this._clients[client.connection.label] = client
   }
 
   @Action
   @LogCall
   public registerNewClient (connection: Connection) {
     if (!CoreModule.server) return
-    this.addClient(new Client(connection))
+    this._addClient(new Client(connection))
   }
 
   @Action
@@ -119,7 +99,7 @@ class AuthModule extends VuexModule implements IAuthModule {
 
   @Action
   @LogCall
-  process (request: ApiRequest) {
+  public process (request: ApiRequest) {
     switch (request.query) {
       case 'server/auth?renameMe':
         this._renameMe(request)
