@@ -1,10 +1,16 @@
 <template>
   <v-container>
-    <ChatMessage
-      v-for="(message, key) in messages"
-      :key="key"
-      :message="message"
-    />
+    <VirtualList
+      :size="70"
+      :remain="8"
+      :variable="true"
+    >
+      <ChatMessage
+        v-for="(message, key) in messages"
+        :key="key"
+        :message="message"
+      />
+    </VirtualList>
   </v-container>
 </template>
 
@@ -14,10 +20,12 @@ import ChatMessage from '@/components/ChatMessage.vue'
 import ClientChatModule from '@/store/modules/client-chat'
 import Message from '@/models/server/Message'
 import { IChatMessages } from '@/models/api/ChatMessages'
+import VirtualList from 'vue-virtual-scroll-list'
 
 @Component({
   components: {
-    ChatMessage
+    ChatMessage,
+    VirtualList
   }
 })
 export default class Chat extends Vue {
