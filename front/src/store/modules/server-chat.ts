@@ -44,7 +44,7 @@ class ChatModule extends VuexModule implements IChatModule {
   @Mutation
   @LogCall
   private addMessage (message: Message) {
-    const updatedMsg = message
+    const updatedMsg = { ...message }
     if (updatedMsg.user instanceof Client) {
       delete updatedMsg.user['_connection']
     }
