@@ -14,7 +14,17 @@ export interface UserDataParams {
   name: string
 }
 
-export default class User {
+export interface IPublicUserData {
+  name: string | null
+  role: TRoleNames
+  id?: string
+}
+
+export interface IUser extends IPublicUserData {
+  readonly publicUserData: IPublicUserData
+}
+
+export default class User implements IUser {
   public name: string | null
   public role: TRoleNames
   public id: string
@@ -23,5 +33,13 @@ export default class User {
     this.name = name || null
     this.role = role || 'client'
     this.id = id || nanoid()
+  }
+
+  get publicUserData () {
+    return {
+      name: this.name,
+      role: this.role,
+      id: this.id
+    }
   }
 }

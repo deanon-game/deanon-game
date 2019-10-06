@@ -13,6 +13,7 @@ import { IChatMessages } from '@/models/api/ChatMessages'
 import ApiBroadcast from '@/models/api/ApiBroacastRequest'
 import Client from '@/models/server/Client'
 import Server from '@/models/server/Server'
+import { has } from 'lodash-es'
 
 export interface IChatPermissions {
   all?: boolean
@@ -44,20 +45,12 @@ class ChatModule extends VuexModule implements IChatModule {
   @Mutation
   @LogCall
   private addMessage (message: Message) {
-    const updatedMsg = { ...message }
-    if (updatedMsg.user instanceof Client) {
-      delete updatedMsg.user['_connection']
-    }
-    if (updatedMsg.user instanceof Server) {
-      delete updatedMsg.user.peer
-    }
     Vue.set(this._messages, this._count, message)
   }
 
   @Action
   @LogCall
   public addMyMessage (message: Message) {
-    // TODO: add permission check
     this.addMessage(message)
     this.incrementCount()
     CoreModule.broadcastChatData(new ApiBroadcast({
@@ -67,7 +60,27 @@ class ChatModule extends VuexModule implements IChatModule {
 
   @Action
   @LogCall
+  private processAddMyMessageRequest (request: ApiRequest) {
+    // TODO: add permission check
+    if (
+      has(request, 'data.params.newMessage') &&
+      typeof request.data.params.newMessage === 'string'
+    ) {
+      console.log('data', request)
+      this.addMyMessage(
+        new Message(request.caller, request.data.params.newMessage)
+      )
+    }
+  }
+
+  @Action
+  @LogCall
   process (request: ApiRequest) {
+    switch (request.query) {
+      case 'server/chat?addMyMessage':
+        this.processAddMyMessageRequest(request)
+        break
+    }
   }
 }
 
