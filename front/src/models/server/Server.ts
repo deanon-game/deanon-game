@@ -6,15 +6,18 @@ import ApiRequest from '@/models/api/ApiRequest'
 import AuthModule from '@/store/modules/server-auth'
 import ServerModule from '@/store/modules/server-core'
 import Client from './Client'
+import unserialize from '@/helpers/unserialize'
 
 export default class Server extends User {
+  public peer: Peer
   constructor (id?: string) {
     const peer = new Peer(id, p2pConfig)
-    super({ name: 'server', role: 'system', id: peer.id })
-    peer.on('open', (id) => {
+    super({ name: 'Система', role: 'system', id: peer.id })
+    this.peer = peer
+    this.peer.on('open', (id) => {
       this.id = id
     })
-    peer.on('connection', (connection) => {
+    this.peer.on('connection', (connection) => {
       if (!ServerModule.server) return
       AuthModule.registerNewClient(connection)
       connection.on('data', (request: any) => {
@@ -23,7 +26,7 @@ export default class Server extends User {
           .then((caller:Client | null) => {
             if (caller) {
               ServerModule.onGotData(
-                new ApiRequest(caller, request)
+                new ApiRequest(caller, unserialize(request))
               )
             }
           })

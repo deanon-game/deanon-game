@@ -8,6 +8,9 @@ import Recognizer from '@/helpers/recognizer'
 import NPeer from 'peerjs'
 import { Module, VuexModule, Mutation, Action, getModule } from 'vuex-module-decorators'
 import { LogCall } from '@/helpers/decorators/log'
+import ApiBroadcastRequest from '@/models/api/ApiBroacastRequest'
+import AuthModule from '@/store/modules/server-auth'
+import unreact from '@/helpers/seriallize'
 
 interface OnGotDataPayload {
   connection: NPeer.DataConnection
@@ -51,6 +54,15 @@ class ServerModule extends VuexModule {
       this.setServer(server)
     } catch (err) {
       throw new Error(err)
+    }
+  }
+  @Action
+  @LogCall
+  broadcastChatData (request: ApiBroadcastRequest) {
+    for (let key in AuthModule.clients) {
+      AuthModule.clients[key].connection.send(
+        unreact(request)
+      )
     }
   }
   @Action

@@ -11,9 +11,11 @@
     "test:unit": "vue-cli-service test:unit"
   },
   "dependencies": {
+    "@types/circular-json": "^0.4.0",
     "@types/nanoid": "^2.0.0",
     "@vue/cli": "^3.9.2",
     "axios": "^0.19.0",
+    "circular-json": "^0.5.9",
     "core-js": "^2.6.5",
     "lodash-es": "^4.17.15",
     "nanoid": "^2.1.1",

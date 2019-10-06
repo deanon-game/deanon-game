@@ -3,8 +3,11 @@ import { Module, VuexModule, Mutation, Action, getModule } from 'vuex-module-dec
 
 import Peer from 'peerjs'
 import p2pConfig from '@/helpers/p2p.config.ts'
-import unreact from '@/helpers/unreact'
+import seriallize from '@/helpers/seriallize'
 import { LogCall } from '@/helpers/decorators/log'
+import { isNil } from 'lodash-es'
+import ClientChatModule from '@/store/modules/client-chat'
+import unserialize from '@/helpers/unserialize'
 
 export interface IClientModule {}
 
@@ -35,14 +38,21 @@ class ClientModule extends VuexModule implements IClientModule {
       try {
         const peer = new Peer(connectionPayload.peerId, p2pConfig)
 
-        peer.on('open', () => {
-          // peer.on('data', (data: any): void => {
-          //   console.log('get:', data)
-          // })
+        peer.on('open', (serverId) => {
           resolve()
         })
 
-        this.setConnection(peer.connect(connectionPayload.serverId))
+        const connection = peer.connect(connectionPayload.serverId)
+
+        connection.on('data', (request: any) => {
+          const strRequest = unserialize(request)
+          console.log('got', strRequest)
+          if ('messages' in strRequest) {
+            ClientChatModule.updateMessages(strRequest.messages)
+          }
+        })
+
+        this.setConnection(connection)
       } catch (err) {
         reject(err)
       }
@@ -52,8 +62,9 @@ class ClientModule extends VuexModule implements IClientModule {
   @Action
   @LogCall
   send (payload: any) {
+    if (isNil(payload)) return
     if (this.connection) {
-      this.connection.send(unreact(payload))
+      this.connection.send(seriallize(payload))
     }
   }
 }
