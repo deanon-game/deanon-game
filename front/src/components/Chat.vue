@@ -13,20 +13,28 @@
       />
     </div>
     <v-row>
-      <v-col :sm="10">
-        <v-textarea
-          v-model="newMessage"
-          solo
-          autofocus
-          no-resize
-          label="Ваше сообщение..."
-        />
-      </v-col>
-      <v-col>
-        <v-btn @click.native="sendMsg">
-          send
-        </v-btn>
-      </v-col>
+      <v-form
+        class="chat-form"
+        @submit.prevent="sendMsg"
+      >
+        <v-col sm="10">
+          <v-textarea
+            v-model="newMessage"
+            solo
+            autofocus
+            no-resize
+            label="Ваше сообщение..."
+            @keyup.ctrl.enter="sendMsg"
+          />
+        </v-col>
+        <v-col>
+          <v-btn
+            type="submit"
+          >
+            send
+          </v-btn>
+        </v-col>
+      </v-form>
     </v-row>
   </div>
 </template>
@@ -52,16 +60,14 @@ export default class Chat extends Vue {
     return ClientChatModule.clientMessages
   }
 
+  private clearChatForm () {
+    this.newMessage = ''
+  }
+
   private sendMsg () {
-    const data: IClientRequest = {
-      query: 'server/chat?addMyMessage',
-      data: {
-        params: {
-          newMessage: this.newMessage
-        }
-      }
-    }
-    ClientModule.send(data)
+    ClientChatModule.addMyMessage(this.newMessage).then(() => {
+      this.clearChatForm()
+    })
   }
 }
 </script>
@@ -75,7 +81,13 @@ export default class Chat extends Vue {
 
 .messages-container {
   max-height: 70vh;
+  min-height: 70vh;
   overflow-x: hidden;
   overflow-y: scroll;
+}
+
+.chat-form {
+  display: flex;
+  width: 100%;
 }
 </style>
