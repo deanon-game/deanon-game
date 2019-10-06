@@ -10,7 +10,7 @@ import { Module, VuexModule, Mutation, Action, getModule } from 'vuex-module-dec
 import { LogCall } from '@/helpers/decorators/log'
 import ApiBroadcastRequest from '@/models/api/ApiBroacastRequest'
 import AuthModule from '@/store/modules/server-auth'
-import unreact from '@/helpers/seriallize'
+import seriallize from '@/helpers/seriallize'
 
 interface OnGotDataPayload {
   connection: NPeer.DataConnection
@@ -53,7 +53,7 @@ class ServerModule extends VuexModule {
       const server = new Server(serverId)
       this.setServer(server)
     } catch (err) {
-      throw new Error(err)
+      throw new Error('create ' + err)
     }
   }
   @Action
@@ -61,7 +61,7 @@ class ServerModule extends VuexModule {
   broadcastChatData (request: ApiBroadcastRequest) {
     for (let key in AuthModule.clients) {
       AuthModule.clients[key].connection.send(
-        unreact(request)
+        seriallize(request)
       )
     }
   }

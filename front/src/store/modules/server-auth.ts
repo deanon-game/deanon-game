@@ -92,7 +92,8 @@ class AuthModule extends VuexModule implements IAuthModule {
   @Action
   @LogCall
   public getClientByConnection (connection: Connection): Promise<Client | null> {
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
+      if (!has(connection, 'label')) reject(Error('label not found in connection'))
       resolve(get(this.clients, connection.label, null))
     })
   }
