@@ -1,6 +1,6 @@
 const isProd = process.env.node_env === 'production'
 const host = isProd ? 'localhost' : '/'
-const port = null || 9000
+const port = isProd ? null : 9000
 const secure = isProd
 
 export default {
