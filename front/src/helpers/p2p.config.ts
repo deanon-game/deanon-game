@@ -1,6 +1,8 @@
+import port from './SERVER_PORT'
+
 export default {
   host: 'localhost',
-  debug: 0,
-  port: 9000,
+  debug: 3,
+  port,
   path: '/api/p2p/'
 }
