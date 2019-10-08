@@ -1,24 +1,8 @@
-const fs = require('fs')
 const path = require('path')
 const express = require('express')
 const app = express()
 const ExpressPeerServer = require('peer').ExpressPeerServer
 const port = process.env.PORT || 9000
-
-const portConfigFrontString = 'export default ' + port
-
-fs.writeFile(
-  path.resolve(
-    __dirname,
-    '../front/src/helpers/SERVER_PORT.ts'
-  ),
-  portConfigFrontString,
-  function (err) {
-    if (err) {
-      return console.log(err)
-    }
-    console.log('front/src/helpers/SERVER_PORT.ts > ' + portConfigFrontString)
-  })
 
 app.use(express.static(path.join(__dirname, '/public')))
 
