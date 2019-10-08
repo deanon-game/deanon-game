@@ -2,7 +2,9 @@ const path = require('path')
 const express = require('express')
 const app = express()
 const ExpressPeerServer = require('peer').ExpressPeerServer
-const port = 443 || 9000
+const port = process.env.PORT || 9000
+
+console.log(port)
 
 app.use(express.static(path.join(__dirname, '/public')))
 
