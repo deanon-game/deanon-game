@@ -5,7 +5,8 @@
   "main": "back/app.js",
   "scripts": {
     "start": "node back/app.js",
-    "heroku-prebuild": "cd back/ && npm i && cd .."
+    "heroku-prebuild": "cd back/ && npm i && cd ..",
+    "build": "cd front/ && npm run build"
   },
   "cacheDirectories": ["front/node_modules", "back/node_modules"],
   "engines": {

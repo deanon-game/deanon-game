@@ -1,4 +1,5 @@
 module.exports = {
+  outputDir: '../back/public',
   chainWebpack: config => {
     config.module
       .rule('images')
