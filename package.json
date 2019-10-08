@@ -5,7 +5,7 @@
   "main": "back/app.js",
   "scripts": {
     "heroku-prebuild": "cd back/ && npm i && cd ../front/ && npm i",
-    "build": "ls && cd front/ && npx vue-cli-service build",
+    "build": "cd front/ && npx vue-cli-service build",
     "start": "node back/app.js"
   },
   "cacheDirectories": ["front/node_modules", "back/node_modules"],
