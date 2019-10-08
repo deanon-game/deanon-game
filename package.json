@@ -4,8 +4,8 @@
   "private": true,
   "main": "back/app.js",
   "scripts": {
-    "heroku-prebuild": "cd back/ && npm i && cd ../front/ && npm i",
-    "build": "cd front/ && npx vue-cli-service build",
+    "heroku-prebuild": "cd back/ && npm i && cd ../front/ && npm i && npm i -g @vue/cli-service-global",
+    "build": "cd front/ && npm run build",
     "start": "node back/app.js"
   },
   "cacheDirectories": ["front/node_modules", "back/node_modules"],
