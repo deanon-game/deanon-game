@@ -1,0 +1,14 @@
+{
+  "name": "pygmalemon",
+  "version": "0.0.1",
+  "private": true,
+  "main": "back/app.js",
+  "scripts": {
+    "start": "node back/app.js",
+    "heroku-prebuild": "cd back/ && npm i && cd .."
+  },
+  "cacheDirectories": ["front/node_modules", "back/node_modules"],
+  "engines": {
+    "node": "10.x"
+  }
+}

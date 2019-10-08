@@ -10,7 +10,18 @@ import { IClientRequest } from '@/models/client/ClientRequest'
 @Module({ dynamic: true, store, name: 'chat' })
 class ClientChatModule extends VuexModule {
   private _messages: IChatMessages = {}
+  private _isLogined: boolean = false
+
   public defaultLogo: any = defaultLogo
+
+  get isLogined () {
+    return this._isLogined
+  }
+
+  @Mutation
+  setLogin (value: boolean) {
+    this._isLogined = value
+  }
 
   get clientMessages (): IChatMessages {
     return this._messages
@@ -35,6 +46,24 @@ class ClientChatModule extends VuexModule {
         }
       }
       ClientModule.send(data).then(() => {
+        resolve()
+      })
+    })
+  }
+  @Action
+  @LogCall
+  public renameMe (name: string) {
+    return new Promise((resolve) => {
+      const data: IClientRequest = {
+        query: 'server/auth?renameMe',
+        data: {
+          params: {
+            name
+          }
+        }
+      }
+      ClientModule.send(data).then(() => {
+        this.setLogin(true)
         resolve()
       })
     })

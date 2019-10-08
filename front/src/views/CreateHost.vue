@@ -9,7 +9,6 @@
     <div v-else>
       Генерация ссылки...
     </div>
-    <Chat />
   </div>
 </template>
 
