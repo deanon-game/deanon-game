@@ -9,7 +9,22 @@ export interface NewUserPayload {
   role?: TRoleNames
   id?: string
 }
-export default class User {
+
+export interface UserDataParams {
+  name: string
+}
+
+export interface IPublicUserData {
+  name: string | null
+  role: TRoleNames
+  id?: string
+}
+
+export interface IUser extends IPublicUserData {
+  readonly publicUserData: IPublicUserData
+}
+
+export default class User implements IUser {
   public name: string | null
   public role: TRoleNames
   public id: string
@@ -20,20 +35,11 @@ export default class User {
     this.id = id || nanoid()
   }
 
-  public rename (store: any, caller: User, newName: string) {
-    return new Promise((resolve, reject) => {
-      const renameType = this.id === caller.id ? 'own' : 'other'
-      const hasRenamePermission = RolesModule.hasPermission({
-        caller,
-        path: `auth/rename/${renameType}`
-      })
-      if (!hasRenamePermission) {
-        reject(new ServerError({
-          message: `RenameError: Permission to change ${renameType} username was denied.`,
-          caller
-        }))
-      }
-      this.name = newName
-    })
+  get publicUserData () {
+    return {
+      name: this.name,
+      role: this.role,
+      id: this.id
+    }
   }
 }

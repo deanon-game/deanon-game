@@ -1,16 +1,17 @@
 import User from '@/models/server/User'
-import ModuleRequest from '@/models/common/ModuleRequest'
-import Connection from '@/models/common/Connection'
-import FreeObject from '@/models/common/FreeObject'
+import Connection from '@/models/api/Connection'
 
-export interface NewUserDataParams {
-  name: string
+export interface IClient {
+  readonly connection: Connection
 }
 
-export default class Client extends User {
-  public connection: Connection
-  constructor (request: ModuleRequest<NewUserDataParams, FreeObject>) {
-    super({ name: request.data.params.name })
-    this.connection = request.connection
+export default class Client extends User implements IClient {
+  public _connection: Connection
+  get connection () {
+    return this._connection
+  }
+  constructor (connection: Connection) {
+    super({})
+    this._connection = connection
   }
 }

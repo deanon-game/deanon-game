@@ -1,15 +1,20 @@
 import store from '@/store/index'
 
 import Server from '@/models/server/Server'
-import IData from '@/models/api/IData'
-import FreeObject from '@/models/common/FreeObject'
+import IData from '@/models/api/Data'
+import ApiRequest from '@/models/api/ApiRequest'
+import Recognizer from '@/helpers/recognizer'
 
 import NPeer from 'peerjs'
 import { Module, VuexModule, Mutation, Action, getModule } from 'vuex-module-decorators'
+import { LogCall } from '@/helpers/decorators/log'
+import ApiBroadcastRequest from '@/models/api/ApiBroacastRequest'
+import AuthModule from '@/store/modules/server-auth'
+import seriallize from '@/helpers/seriallize'
 
 interface OnGotDataPayload {
   connection: NPeer.DataConnection
-  data: IData<FreeObject, FreeObject>
+  data: IData<any, any>
 }
 
 export interface IServerModule {
@@ -21,7 +26,7 @@ export interface IServerModule {
 }
 
 @Module({ dynamic: true, store, name: 'server' })
-class ServerModule extends VuexModule implements IServerModule {
+class ServerModule extends VuexModule {
   private _server: Server | null = null
 
   get server (): Server | null {
@@ -36,25 +41,35 @@ class ServerModule extends VuexModule implements IServerModule {
   }
 
   @Mutation
+  @LogCall
   public setServer (server: Server) {
     this._server = server
   }
 
   @Action
+  @LogCall
   public create (serverId?: string) {
     try {
       const server = new Server(serverId)
-      this.context.commit('setServer', server)
+      this.setServer(server)
     } catch (err) {
-      throw new Error(err)
+      throw new Error('create ' + err)
     }
   }
   @Action
-  public onGotData (payload: OnGotDataPayload) {
+  @LogCall
+  broadcastChatData (request: ApiBroadcastRequest) {
+    for (let key in AuthModule.clients) {
+      AuthModule.clients[key].connection.send(
+        seriallize(request)
+      )
+    }
+  }
+  @Action
+  @LogCall
+  onGotData (request: ApiRequest) {
     try {
-      console.log('got', payload)
-      // const server = new Server(serverId)
-      // this.context.commit('setServer', server)
+      Recognizer.process(request)
     } catch (err) {
       throw new Error(err)
     }

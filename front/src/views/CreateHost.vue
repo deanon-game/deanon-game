@@ -9,12 +9,11 @@
     <div v-else>
       Генерация ссылки...
     </div>
-    <DeChat />
   </div>
 </template>
 
 <script lang="ts">
-import DeChat from '@/components/Chat.vue'
+import Chat from '@/components/Chat.vue'
 import User from '@/models/server/User.ts'
 import nanoid from 'nanoid'
 
@@ -23,14 +22,15 @@ import Server from '@/models/server/Server'
 import ServerModule from '@/store/modules/server-core'
 
 import { Vue, Component, Watch } from 'vue-property-decorator'
+import { isNil, get } from 'lodash-es'
 
 @Component({
   components: {
-    DeChat
+    Chat
   }
 })
 export default class CreateHost extends Vue {
-  created () {
+  mounted () {
     this.createGame()
   }
 
@@ -40,10 +40,13 @@ export default class CreateHost extends Vue {
   get server () {
     return ServerModule.server
   }
+  get existingHostId () {
+    return get(this.$route, 'query.hostId', null)
+  }
 
   @Watch('server')
   function () {
-    if (this.server) {
+    if (this.server && isNil(this.existingHostId)) {
       this.changePath(this.server.id)
     }
   }
@@ -57,17 +60,8 @@ export default class CreateHost extends Vue {
     })
   }
   private createGame () {
-    const user1 = new User({ name: 'Вася' })
-    const user2 = new User({ name: 'Петя' })
-
-    user1.rename(this.$store, user1, 'Фёдор').then(() => {
-      console.log('user1 now is ', user1)
-    })
-
-    const hostId = this.$route.query.hostId
-
-    if (typeof (hostId) === 'string') {
-      ServerModule.create(hostId)
+    if (!isNil(this.existingHostId)) {
+      ServerModule.create(this.existingHostId)
     } else {
       ServerModule.create()
     }

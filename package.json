@@ -1,21 +1,15 @@
 {
-  "name": "deanon-game",
-  "version": "0.1.0",
+  "name": "pygmalemon",
+  "version": "0.0.1",
   "private": true,
+  "main": "back/app.js",
   "scripts": {
-    "start-back": "cd back && yarn start",
-    "start-front": "cd front && yarn serve",
-    "build-front": "cd front && yarn build",
-    "lint-back": "cd back && yarn lint",
-    "lint-front": "cd front && yarn lint",
-    "lint": "concurrently --kill-others-on-fail \"yarn lint-back\" \"yarn lint-front\"",
-    "lint-back:fix": "cd back && yarn lint:fix",
-    "lint-front:fix": "cd front && yarn lint:fix",
-    "lint:fix": "concurrently -n w: \"yarn:lint-*:fix\"",
-    "dev": "concurrently --kill-others yarn:start-*",
-    "update": "yarn & concurrently \"cd front && yarn\" \"cd back && yarn\""
+    "heroku-prebuild": "cd back/ && npm i && cd ../front/ && npm i",
+    "build": "cd front/ && npm run build",
+    "start": "node back/app.js"
   },
-  "devDependencies": {
-    "concurrently": "^4.1.1"
+  "cacheDirectories": ["front/node_modules", "back/node_modules"],
+  "engines": {
+    "node": "10.x"
   }
 }

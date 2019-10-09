@@ -4,7 +4,8 @@ import Vuetify, {
   VTextarea,
   VList,
   VImg,
-  VCard
+  VCard,
+  VResponsive
 } from 'vuetify/lib'
 import 'vuetify/dist/vuetify.css'
 
@@ -15,7 +16,8 @@ Vue.use(Vuetify, {
     VTextarea,
     VList,
     VImg,
-    VCard
+    VCard,
+    VResponsive
   }
 })
 

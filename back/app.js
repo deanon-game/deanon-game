@@ -1,10 +1,14 @@
+const path = require('path')
 const express = require('express')
 const app = express()
 const ExpressPeerServer = require('peer').ExpressPeerServer
+const port = process.env.PORT || 9000
 
-app.get('/', (req, res, next) => { res.send('Hello world!') })
+console.log(port)
 
-const server = app.listen(9000)
+app.use(express.static(path.join(__dirname, '/public')))
+
+const server = app.listen(port)
 
 const options = {
   debug: true
@@ -13,5 +17,11 @@ const options = {
 const peerserver = ExpressPeerServer(server, options)
 
 app.use('/api/p2p/', peerserver)
+
+app.get('*', function (req, res) {
+  res.sendfile(path.join(__dirname, '/public/index.html'))
+})
+
+console.log('http://localhost:' + port)
 
 console.log('waiting for requests')
