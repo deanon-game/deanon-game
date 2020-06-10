@@ -7,8 +7,6 @@ import { Module, VuexModule, Action, getModule } from 'vuex-module-decorators'
 
 import { LogHostCall } from '@/helpers/decorators/log'
 
-import { ICoreModule } from '@/models/server/Module'
-
 interface PermissionToCheck {
   caller: User,
   path: string
@@ -24,8 +22,8 @@ export interface IRolesPermissions {
   all?: boolean
 }
 
-@Module({ dynamic: true, store, name: 'roles' })
-class RolesModule extends VuexModule implements ICoreModule {
+@Module({ dynamic: true, store, name: 'serverRoles' })
+class RolesModule extends VuexModule {
   get defaultPermissions (): Permission {
     return {
       all: false,

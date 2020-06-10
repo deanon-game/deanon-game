@@ -13,7 +13,7 @@ import Message from '@/models/server/Message'
 import { LogHostCall } from '@/helpers/decorators/log'
 import { CheckPermission } from '@/helpers/decorators/check'
 import Connection from '@/models/api/Connection'
-import { HostLogger } from '../../helpers/logger'
+import { HostLogger } from '@/helpers/logger'
 
 export interface IAuthPermissions {
   all?: boolean
@@ -23,19 +23,15 @@ export interface IAuthPermissions {
 
 export interface IAuthModule {
   readonly clients: { [key: string]: Client }
-  process (request: ApiRequest): void
+  processAuth (request: ApiRequest): void
 }
-
-// interface FindClientData {
-//   clientId: string
-// }
 
 interface IRenameClientPayload {
   client: Client,
   newName: string
 }
 
-@Module({ dynamic: true, store, name: 'auth' })
+@Module({ dynamic: true, store, name: 'serverAuth' })
 class AuthModule extends VuexModule implements IAuthModule {
   private _clients: { [key: string]: Client } = {}
 
@@ -77,7 +73,6 @@ class AuthModule extends VuexModule implements IAuthModule {
           oldName ? 'из "' + oldName + '"' : ''
         } в "${request.data.params.name}"`
       )
-      console.log(showMessage)
       ChatModule.addMyMessage(showMessage)
     }
   }
@@ -108,7 +103,8 @@ class AuthModule extends VuexModule implements IAuthModule {
 
   @Action
   @LogHostCall
-  public process (request: ApiRequest) {
+  public processAuth (request: ApiRequest) {
+    console.log('called')
     switch (request.query) {
       case 'server/auth?renameMe':
         this._renameMe(request)

@@ -7,7 +7,7 @@ import ClientModule from '@/store/modules/client-core'
 import { IClientRequest } from '@/models/client/ClientRequest'
 import Message from '@/models/server/Message'
 
-@Module({ dynamic: true, store, name: 'chat' })
+@Module({ dynamic: true, store, name: 'clientChat' })
 class ClientChatModule extends VuexModule {
   private _messages: Message[] = []
 

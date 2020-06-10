@@ -29,7 +29,7 @@ export default class Server extends User {
           const caller:Client | null = await AuthModule.getClientByConnection(connection)
           if (!isNil(caller) && !isNil(request)) {
             const unserrializedRequest = unserialize(request)
-            ServerModule.onGotData(new ApiRequest(caller, unserrializedRequest))
+            await ServerModule.onGotData(new ApiRequest(caller, unserrializedRequest))
           }
         } catch (e) {
           console.error(e)

@@ -18,7 +18,7 @@ export interface ConnectionPayload {
   serverId: string,
   peerId?: string
 }
-@Module({ dynamic: true, store, name: 'client' })
+@Module({ dynamic: true, store, name: 'clientCore' })
 class ClientModule extends VuexModule implements IClientModule {
   private _connection: Connection | null = null
 

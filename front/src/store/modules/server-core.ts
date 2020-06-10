@@ -15,17 +15,10 @@ import TModulesNames from '@/models/server/TModulesNames'
 
 import AuthModule from '@/store/modules/server-auth'
 import ChatModule from '@/store/modules/server-chat'
-import { ICoreModule } from '@/models/server/Module'
 
 interface OnGotDataPayload {
   connection: NPeer.DataConnection
   data: IData<any, any>
-}
-
-type ICoreModules = {
-  server: {
-    [key in TModulesNames]: ICoreModule
-  }
 }
 
 export interface IServerModule {
@@ -36,7 +29,7 @@ export interface IServerModule {
   onGotData (payload: OnGotDataPayload) : void
 }
 
-@Module({ dynamic: true, store, name: 'server' })
+@Module({ dynamic: true, store, name: 'serverCore' })
 class ServerModule extends VuexModule {
   private _server: Server | null = null
 
@@ -69,9 +62,8 @@ class ServerModule extends VuexModule {
   }
   @Action
   @LogHostCall
-  broadcastChatData (request: ApiBroadcastRequest) {
+  async broadcastChatData (request: ApiBroadcastRequest) {
     const serrialized = seriallize(request)
-    console.log(request, serrialized)
     for (let key in AuthModule.clients) {
       AuthModule.clients[key].connection.send(serrialized)
     }
@@ -94,10 +86,10 @@ class ServerModule extends VuexModule {
 
       switch (modulePath) {
         case 'server/chat':
-          await ChatModule.process(request)
+          await ChatModule.processChat(request)
           break
         case 'server/auth':
-          await AuthModule.process(request)
+          await AuthModule.processAuth(request)
           break
       }
     } catch (err) {

@@ -3,7 +3,6 @@ import { Module, VuexModule, Mutation, Action, getModule } from 'vuex-module-dec
 
 import ApiRequest from '@/models/api/ApiRequest'
 import Message from '@/models/server/Message'
-import { ICoreModule } from '@/models/server/Module'
 
 import defaultLogo from '@/assets/anonymous.svg'
 import { LogHostCall } from '@/helpers/decorators/log'
@@ -15,13 +14,13 @@ import { HostLogger } from '../../helpers/logger'
 export interface IChatPermissions {
   all?: boolean
 }
-export interface IChatModule extends ICoreModule {
+export interface IChatModule {
   readonly count: number
   readonly messages: Message[]
   addMyMessage (message: Message): void
 }
 
-@Module({ dynamic: true, store, name: 'chat' })
+@Module({ dynamic: true, store, name: 'serverChat' })
 class ChatModule extends VuexModule implements IChatModule {
   private _messages: Message[] = []
   private _count: number = 0
@@ -42,9 +41,9 @@ class ChatModule extends VuexModule implements IChatModule {
 
   @Action
   @LogHostCall
-  public addMyMessage (message: Message) {
+  public async addMyMessage (message: Message) {
     this.addMessage(message)
-    CoreModule.broadcastChatData(new ApiBroadcast({
+    await CoreModule.broadcastChatData(new ApiBroadcast({
       messages: this.messages
     }))
   }
@@ -53,6 +52,7 @@ class ChatModule extends VuexModule implements IChatModule {
   @LogHostCall
   private async processAddMyMessageRequest (request: ApiRequest) {
     // TODO: add permission check
+    console.log('processAddMyMessageRequest')
     if (
       has(request, 'data.params.newMessage') &&
       typeof request.data.params.newMessage === 'string'
@@ -65,7 +65,7 @@ class ChatModule extends VuexModule implements IChatModule {
 
   @Action
   @LogHostCall
-  async process (request: ApiRequest) {
+  async processChat (request: ApiRequest) {
     try {
       if (!request) return
 
