@@ -4,10 +4,11 @@ import { Module, VuexModule, Mutation, Action, getModule } from 'vuex-module-dec
 import Peer from 'peerjs'
 import p2pConfig from '@/helpers/p2p.config.ts'
 import seriallize from '@/helpers/seriallize'
-import { LogCall } from '@/helpers/decorators/log'
+import { LogClientCall } from '@/helpers/decorators/log'
 import { isNil } from 'lodash-es'
 import ClientChatModule from '@/store/modules/client-chat'
 import unserialize from '@/helpers/unserialize'
+import { ClientLogger } from '../../helpers/logger'
 
 export interface IClientModule {}
 
@@ -26,13 +27,13 @@ class ClientModule extends VuexModule implements IClientModule {
   }
 
   @Mutation
-  @LogCall
+  @LogClientCall
   setConnection (connection: Connection) {
     this._connection = connection
   }
 
   @Action
-  @LogCall
+  @LogClientCall
   connect (connectionPayload:ConnectionPayload) {
     return new Promise((resolve, reject) => {
       try {
@@ -44,11 +45,11 @@ class ClientModule extends VuexModule implements IClientModule {
 
         const connection = peer.connect(connectionPayload.serverId)
 
-        connection.on('data', (request: any) => {
-          const strRequest = unserialize(request)
-          console.log('got', strRequest)
-          if ('messages' in strRequest) {
-            ClientChatModule.updateMessages(strRequest.messages)
+        connection.on('data', (strRequest: string) => {
+          const request = unserialize(strRequest)
+          ClientLogger.log('got data', [{ key: 'parsed request', value: request }])
+          if ('messages' in request) {
+            ClientChatModule.updateMessages(request.messages)
           }
         })
 
@@ -60,12 +61,13 @@ class ClientModule extends VuexModule implements IClientModule {
   }
 
   @Action
-  @LogCall
+  @LogClientCall
   send (payload: any) {
     return new Promise((resolve, reject) => {
       if (isNil(payload)) reject(new Error('payload is empty'))
       if (this.connection) {
         this.connection.send(seriallize(payload))
+
         resolve()
       }
     })

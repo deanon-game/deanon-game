@@ -38,5 +38,8 @@ export default class Chat extends Vue {
 </script>
 
 <style scoped>
-
+.title {
+  color: brown;
+  font-weight: ;
+}
 </style>

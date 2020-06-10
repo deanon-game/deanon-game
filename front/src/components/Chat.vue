@@ -44,7 +44,6 @@ import { Vue, Component } from 'vue-property-decorator'
 import ChatMessage from '@/components/ChatMessage.vue'
 import ClientChatModule from '@/store/modules/client-chat'
 import Message from '@/models/server/Message'
-import { IChatMessages } from '@/models/api/ChatMessages'
 import ClientModule, { ConnectionPayload } from '@/store/modules/client-core'
 import { IClientRequest } from '@/models/client/ClientRequest'
 
@@ -56,7 +55,7 @@ import { IClientRequest } from '@/models/client/ClientRequest'
 export default class Chat extends Vue {
   private newMessage: string = ''
 
-  get messages (): IChatMessages {
+  get messages (): Message[] {
     return ClientChatModule.clientMessages
   }
 
@@ -65,6 +64,8 @@ export default class Chat extends Vue {
   }
 
   private sendMsg () {
+    if (this.newMessage.length === 0) return
+
     ClientChatModule.addMyMessage(this.newMessage).then(() => {
       this.clearChatForm()
     })

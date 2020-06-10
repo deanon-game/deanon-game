@@ -3,18 +3,29 @@ import store from '@/store/index'
 import Server from '@/models/server/Server'
 import IData from '@/models/api/Data'
 import ApiRequest from '@/models/api/ApiRequest'
-import Recognizer from '@/helpers/recognizer'
 
 import NPeer from 'peerjs'
 import { Module, VuexModule, Mutation, Action, getModule } from 'vuex-module-decorators'
-import { LogCall } from '@/helpers/decorators/log'
+import { LogHostCall } from '@/helpers/decorators/log'
 import ApiBroadcastRequest from '@/models/api/ApiBroacastRequest'
-import AuthModule from '@/store/modules/server-auth'
 import seriallize from '@/helpers/seriallize'
+import { HostLogger } from '@/helpers/logger'
+
+import TModulesNames from '@/models/server/TModulesNames'
+
+import AuthModule from '@/store/modules/server-auth'
+import ChatModule from '@/store/modules/server-chat'
+import { ICoreModule } from '@/models/server/Module'
 
 interface OnGotDataPayload {
   connection: NPeer.DataConnection
   data: IData<any, any>
+}
+
+type ICoreModules = {
+  server: {
+    [key in TModulesNames]: ICoreModule
+  }
 }
 
 export interface IServerModule {
@@ -41,37 +52,66 @@ class ServerModule extends VuexModule {
   }
 
   @Mutation
-  @LogCall
+  @LogHostCall
   public setServer (server: Server) {
     this._server = server
   }
 
   @Action
-  @LogCall
+  @LogHostCall
   public create (serverId?: string) {
     try {
       const server = new Server(serverId)
       this.setServer(server)
     } catch (err) {
-      throw new Error('create ' + err)
+      HostLogger.error('create', err)
     }
   }
   @Action
-  @LogCall
+  @LogHostCall
   broadcastChatData (request: ApiBroadcastRequest) {
+    const serrialized = seriallize(request)
+    console.log(request, serrialized)
     for (let key in AuthModule.clients) {
-      AuthModule.clients[key].connection.send(
-        seriallize(request)
-      )
+      AuthModule.clients[key].connection.send(serrialized)
     }
   }
+
   @Action
-  @LogCall
-  onGotData (request: ApiRequest) {
+  @LogHostCall
+  public async tryProcessQuery (request: ApiRequest) {
+    if (!request.query) return null
     try {
-      Recognizer.process(request)
+      const moduleQuery = request.query.split('?')
+      const modulePath = moduleQuery[0]
+      HostLogger.log(`Call Module ${modulePath}`, [{
+        key: `full:`,
+        value: moduleQuery
+      }, {
+        key: `request:`,
+        value: request
+      }])
+
+      switch (modulePath) {
+        case 'server/chat':
+          await ChatModule.process(request)
+          break
+        case 'server/auth':
+          await AuthModule.process(request)
+          break
+      }
     } catch (err) {
-      throw new Error(err)
+      HostLogger.error('tryProcessQuery', err)
+    }
+  }
+
+  @Action
+  @LogHostCall
+  async onGotData (request: ApiRequest) {
+    try {
+      await this.tryProcessQuery(request)
+    } catch (err) {
+      HostLogger.error('onGotData', err)
     }
   }
 }

@@ -1,14 +1,11 @@
 <template>
-  <v-layout
-    align-center
-    justify-center
-    row
-    fill-height
-  >
-    <v-btn :to="{name:'create'}">
-      Создать игру
-    </v-btn>
-  </v-layout>
+  <main>
+    <section>
+      <v-btn :to="{name:'create'}">
+        Создать комнату
+      </v-btn>
+    </section>
+  </main>
 </template>
 
 <script>

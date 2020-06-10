@@ -1,53 +1,49 @@
-
 <template>
   <v-container>
     <Chat v-if="isLogined" />
     <LoginForm
       v-else
-      :is-joined-to-server="isJoined"
+      :is-joined-to-server="isJoinedToServer"
+      @join="joinChat"
     />
   </v-container>
 </template>
 
 <script lang="ts">
 import { Vue, Component, Prop } from 'vue-property-decorator'
-import ChatMessage from './ChatMessage.vue'
+import Chat from '@/components/Chat.vue'
+import LoginForm from '@/components/LoginForm.vue'
 
 import ClientModule, { ConnectionPayload } from '@/store/modules/client-core'
 import ClientChatModule from '@/store/modules/client-chat'
 import { IClientRequest } from '@/models/client/ClientRequest'
-import Chat from '@/components/Chat.vue'
-import LoginForm from '@/components/LoginForm.vue'
 
 @Component({
   components: {
-    ChatMessage,
     Chat,
     LoginForm
   }
 })
 export default class JoinChat extends Vue {
-  @Prop({
-    type: String,
-    required: true
-  }) readonly serverId!: string
+  private isLogined: boolean = false
 
-  get isLogined () {
-    return ClientChatModule.isLogined
+  get serverId (): string {
+    return `${this.$route.query.hostId}`
   }
 
-  created () {
-    this.joinChat()
-  }
+  private isJoinedToServer: boolean = false
 
-  private isJoined: boolean = false
-  joinChat () {
+  async created () {
     const payload: ConnectionPayload = {
       serverId: this.serverId
     }
-    ClientModule.connect(payload).then(() => {
-      this.isJoined = true
-    })
+    await ClientModule.connect(payload)
+    this.isJoinedToServer = true
+  }
+
+  async joinChat ({ name }: {name: string}) {
+    await ClientChatModule.loginMe(name)
+    this.isLogined = true
   }
 }
 </script>

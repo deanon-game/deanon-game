@@ -20,18 +20,17 @@ export default class Server extends User {
     })
     this.peer.on('connection', (connection) => {
       if (!ServerModule.server) return
+
       AuthModule.registerNewClient(connection)
-      connection.on('data', (request: any) => {
+
+      connection.on('data', async (request: string) => {
         if (!ServerModule.server) return
         try {
-          AuthModule.getClientByConnection(connection)
-            .then((caller:Client | null) => {
-              if (!isNil(caller) && !isNil(request)) {
-                ServerModule.onGotData(
-                  new ApiRequest(caller, unserialize(request))
-                )
-              }
-            })
+          const caller:Client | null = await AuthModule.getClientByConnection(connection)
+          if (!isNil(caller) && !isNil(request)) {
+            const unserrializedRequest = unserialize(request)
+            ServerModule.onGotData(new ApiRequest(caller, unserrializedRequest))
+          }
         } catch (e) {
           console.error(e)
         }
