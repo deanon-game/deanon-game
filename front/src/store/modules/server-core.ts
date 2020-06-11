@@ -11,7 +11,9 @@ import ApiBroadcastRequest from '@/models/api/ApiBroacastRequest'
 import seriallize from '@/helpers/seriallize'
 import { HostLogger } from '@/helpers/logger'
 
-import TModulesNames from '@/models/server/TModulesNames'
+import Client from '@/models/server/Client'
+import unserialize from '@/helpers/unserialize'
+import { isNil } from 'lodash-es'
 
 import AuthModule from '@/store/modules/server-auth'
 import ChatModule from '@/store/modules/server-chat'
@@ -28,6 +30,8 @@ export interface IServerModule {
   create (serverId?: string) : void
   onGotData (payload: OnGotDataPayload) : void
 }
+
+type CB = (connection: any) => any
 
 @Module({ dynamic: true, store, name: 'serverCore' })
 class ServerModule extends VuexModule {
@@ -54,7 +58,26 @@ class ServerModule extends VuexModule {
   @LogHostCall
   public create (serverId?: string) {
     try {
-      const server = new Server(serverId)
+      const cb = (connection: any) => {
+        if (!this.server) return
+
+        AuthModule.registerNewClient(connection)
+
+        connection.on('data', async (request: string) => {
+          if (!this.server) return
+          try {
+            const caller:Client | null = await AuthModule.getClientByConnection(connection)
+            if (!isNil(caller) && !isNil(request)) {
+              const unserrializedRequest = unserialize(request)
+              await this.onGotData(new ApiRequest(caller, unserrializedRequest))
+            }
+          } catch (e) {
+            console.error(e)
+          }
+        })
+      }
+      const server = new Server(cb as CB, serverId)
+
       this.setServer(server)
     } catch (err) {
       HostLogger.error('create', err)

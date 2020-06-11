@@ -63,10 +63,10 @@ class ClientModule extends VuexModule implements IClientModule {
   @Action
   @LogClientCall
   send (payload: any) {
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
       if (isNil(payload)) reject(new Error('payload is empty'))
       if (this.connection) {
-        this.connection.send(seriallize(payload))
+        await this.connection.send(seriallize(payload))
 
         resolve()
       }
