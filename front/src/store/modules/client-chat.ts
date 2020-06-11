@@ -32,7 +32,7 @@ class ClientChatModule extends VuexModule {
 
   @Action
   @LogClientCall
-  public addMyMessage (newMessage: string) {
+  public addMyClientMessage (newMessage: string) {
     return new Promise((resolve) => {
       const data: IClientRequest = {
         query: 'server/chat?addMyMessage',

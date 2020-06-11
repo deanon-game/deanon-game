@@ -66,7 +66,7 @@ export default class Chat extends Vue {
   private sendMsg () {
     if (this.newMessage.length === 0) return
 
-    ClientChatModule.addMyMessage(this.newMessage).then(() => {
+    ClientChatModule.addMyClientMessage(this.newMessage).then(() => {
       this.clearChatForm()
     })
   }

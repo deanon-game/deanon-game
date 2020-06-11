@@ -39,6 +39,15 @@ export default class JoinChat extends Vue {
     this.isJoinedToServer = true
   }
 
+  mounted () {
+    window.addEventListener('beforeunload', (event) => {
+      let evt = event || window.event
+      evt.preventDefault()
+      evt.returnValue = ''
+      return ''
+    })
+  }
+
   async joinChat ({ name }: {name: string}) {
     await ClientChatModule.loginMe(name)
     this.isLogined = true
