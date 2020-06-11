@@ -27,9 +27,7 @@ import { IClientRequest } from '@/models/client/ClientRequest'
 export default class JoinChat extends Vue {
   private isLogined: boolean = false
 
-  get serverId (): string {
-    return `${this.$route.query.hostId}`
-  }
+  @Prop({ type: String, required: true }) serverId!: string
 
   private isJoinedToServer: boolean = false
 
