@@ -39,6 +39,12 @@ class ChatModule extends VuexModule implements IChatModule {
     this._messages.push(message)
   }
 
+  @Mutation
+  @LogHostCall
+  private clearAllMessages () {
+    this._messages = []
+  }
+
   @Action
   @LogHostCall
   public async addMyMessage (message: Message) {
@@ -65,6 +71,15 @@ class ChatModule extends VuexModule implements IChatModule {
 
   @Action
   @LogHostCall
+  private async processClearAllMessages (request: ApiRequest) {
+    this.clearAllMessages()
+    await CoreModule.broadcastChatData(new ApiBroadcast({
+      messages: this.messages
+    }))
+  }
+
+  @Action
+  @LogHostCall
   async processChat (request: ApiRequest) {
     try {
       if (!request) return
@@ -72,6 +87,9 @@ class ChatModule extends VuexModule implements IChatModule {
       switch (request.query) {
         case 'server/chat?addMyMessage':
           await this.processAddMyMessageRequest(request)
+          break
+        case 'server/chat?clearAllMessages':
+          await this.processClearAllMessages(request)
           break
       }
     } catch (err) {

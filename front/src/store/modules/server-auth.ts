@@ -46,6 +46,7 @@ class AuthModule extends VuexModule implements IAuthModule {
       payload.client &&
       payload.newName
     ) {
+      console.log(this._clients[payload.client.connection.label].name, payload.newName)
       this._clients[payload.client.connection.label].name = payload.newName
     }
   }

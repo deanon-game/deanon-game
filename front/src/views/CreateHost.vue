@@ -1,20 +1,21 @@
 <template>
-  <div class="settings">
-    <div v-if="linkToConnect">
-      <v-alert>
-        Чат создан и доступен по адресу
-        <a
-          :href="linkToConnect"
-          target="_blank"
-          @click.prevent
-        >{{ linkToConnect }}</a>
-      </v-alert>
+  <div
+    v-if="linkToConnect"
+    class="create-host"
+  >
+    <v-alert>
+      Чат создан и доступен по адресу
+      <a
+        :href="linkToConnect"
+        target="_blank"
+        @click.prevent
+      >{{ linkToConnect }}</a>
+    </v-alert>
 
-      <JoinChat :server-id="existingHostId" />
-    </div>
-    <div v-else>
-      Генерация ссылки...
-    </div>
+    <JoinChat :server-id="existingHostId" />
+  </div>
+  <div v-else>
+    Генерация ссылки...
   </div>
 </template>
 
@@ -75,3 +76,11 @@ export default class CreateHost extends Vue {
 }
 
 </script>
+
+<style scoped>
+.create-host {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+</style>

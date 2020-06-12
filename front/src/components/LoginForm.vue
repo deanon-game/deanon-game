@@ -1,7 +1,7 @@
 
 <template>
-  <v-container>
-    <v-form
+  <div>
+    <form
       @submit.prevent="onLogin"
     >
       <v-text-field
@@ -11,8 +11,8 @@
       <v-btn type="submit">
         Войти в чат
       </v-btn>
-    </v-form>
-  </v-container>
+    </form>
+  </div>
 </template>
 
 <script lang="ts">

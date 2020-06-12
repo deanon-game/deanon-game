@@ -1,12 +1,16 @@
 <template>
-  <v-container>
-    <Chat v-if="isLogined" />
+  <section class="full-parrent">
+    <Chat
+      v-if="isLogined"
+      class="full-parrent"
+    />
     <LoginForm
       v-else
+      class="full-parrent"
       :is-joined-to-server="isJoinedToServer"
       @join="joinChat"
     />
-  </v-container>
+  </section>
 </template>
 
 <script lang="ts">
@@ -56,5 +60,8 @@ export default class JoinChat extends Vue {
 </script>
 
 <style scoped>
-
+.full-parrent {
+  display: flex;
+  flex: 1 1 auto;
+}
 </style>
