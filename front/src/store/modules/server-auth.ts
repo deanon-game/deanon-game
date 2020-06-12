@@ -10,9 +10,10 @@ import CoreModule from '@/store/modules/server-core'
 import ChatModule from '@/store/modules/server-chat'
 import { get, has } from 'lodash-es'
 import Message from '@/models/server/Message'
-import { LogCall } from '@/helpers/decorators/log'
+import { LogHostCall } from '@/helpers/decorators/log'
 import { CheckPermission } from '@/helpers/decorators/check'
 import Connection from '@/models/api/Connection'
+import { HostLogger } from '@/helpers/logger'
 
 export interface IAuthPermissions {
   all?: boolean
@@ -22,19 +23,15 @@ export interface IAuthPermissions {
 
 export interface IAuthModule {
   readonly clients: { [key: string]: Client }
-  process (request: ApiRequest): void
+  processAuth (request: ApiRequest): void
 }
-
-// interface FindClientData {
-//   clientId: string
-// }
 
 interface IRenameClientPayload {
   client: Client,
   newName: string
 }
 
-@Module({ dynamic: true, store, name: 'auth' })
+@Module({ dynamic: true, store, name: 'serverAuth' })
 class AuthModule extends VuexModule implements IAuthModule {
   private _clients: { [key: string]: Client } = {}
 
@@ -43,64 +40,72 @@ class AuthModule extends VuexModule implements IAuthModule {
   }
 
   @Mutation
-  @LogCall
+  @LogHostCall
   public rename (payload: IRenameClientPayload) {
     if (
       payload.client &&
       payload.newName
     ) {
+      console.log(this._clients[payload.client.connection.label].name, payload.newName)
       this._clients[payload.client.connection.label].name = payload.newName
     }
   }
 
   @Action
-  @LogCall
+  @LogHostCall
   @CheckPermission
   private _renameMe (request: ApiRequest) {
-    if (!has(request, 'data.params.name')) throw new Error('request has no "data.params.newName"')
-    if (!(request.caller instanceof Client)) throw new Error('caller is not a Client')
+    if (!has(request, 'data.params.name')) {
+      HostLogger.error('_renameMe', 'request has no "data.params.newName"')
+    }
+    if (request.caller instanceof Client) {
+      this.rename({
+        client: request.caller,
+        newName: request.data.params.name
+      })
+    } else {
+      HostLogger.error('_renameMe', 'caller is not a Client')
+    }
     const oldName = request.caller.name
-    this.rename({
-      client: request.caller,
-      newName: request.data.params.name
-    })
     if (CoreModule.server) {
-      ChatModule.addMyMessage(
-        new Message(
-          CoreModule.server,
-          `Пользователь переименовал себя ${
-            oldName ? 'из "' + oldName + '"' : ''
-          } в "${request.data.params.name}"`
-        )
+      const showMessage = new Message(
+        CoreModule.server,
+        `Пользователь переименовал себя ${
+          oldName ? 'из "' + oldName + '"' : ''
+        } в "${request.data.params.name}"`
       )
+      ChatModule.addMyMessage(showMessage)
     }
   }
 
   @Mutation
-  @LogCall
+  @LogHostCall
   private _addClient (client: Client) {
     this._clients[client.connection.label] = client
   }
 
   @Action
-  @LogCall
+  @LogHostCall
   public registerNewClient (connection: Connection) {
     if (!CoreModule.server) return
     this._addClient(new Client(connection))
   }
 
   @Action
-  @LogCall
+  @LogHostCall
   public getClientByConnection (connection: Connection): Promise<Client | null> {
     return new Promise((resolve, reject) => {
-      if (!has(connection, 'label')) reject(Error('label not found in connection'))
-      resolve(get(this.clients, connection.label, null))
+      const label = get(connection, 'label', null)
+      if (!label) return reject(Error('label not found in connection'))
+
+      return resolve(get(this.clients, label, null))
     })
   }
 
   @Action
-  @LogCall
-  public process (request: ApiRequest) {
+  @LogHostCall
+  public processAuth (request: ApiRequest) {
+    console.log('called')
     switch (request.query) {
       case 'server/auth?renameMe':
         this._renameMe(request)

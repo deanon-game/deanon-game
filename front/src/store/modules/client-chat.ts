@@ -2,40 +2,37 @@ import store from '@/store/index'
 import { Module, VuexModule, Mutation, Action, getModule } from 'vuex-module-decorators'
 
 import defaultLogo from '@/assets/anonymous.svg'
-import { LogCall } from '@/helpers/decorators/log'
-import { IChatMessages } from '@/models/api/ChatMessages'
+import { LogClientCall } from '@/helpers/decorators/log'
 import ClientModule from '@/store/modules/client-core'
 import { IClientRequest } from '@/models/client/ClientRequest'
+import Message from '@/models/server/Message'
 
-@Module({ dynamic: true, store, name: 'chat' })
+@Module({ dynamic: true, store, name: 'clientChat' })
 class ClientChatModule extends VuexModule {
-  private _messages: IChatMessages = {}
-  private _isLogined: boolean = false
+  private _messages: Message[] = []
+
+  public isLogined: boolean = false
 
   public defaultLogo: any = defaultLogo
 
-  get isLogined () {
-    return this._isLogined
-  }
-
   @Mutation
   setLogin (value: boolean) {
-    this._isLogined = value
+    this.isLogined = value
   }
 
-  get clientMessages (): IChatMessages {
+  get clientMessages (): Message[] {
     return this._messages
   }
 
   @Mutation
-  @LogCall
-  public updateMessages (messages: IChatMessages) {
+  @LogClientCall
+  public updateMessages (messages: Message[]) {
     this._messages = messages
   }
 
   @Action
-  @LogCall
-  public addMyMessage (newMessage: string) {
+  @LogClientCall
+  public addMyClientMessage (newMessage: string) {
     return new Promise((resolve) => {
       const data: IClientRequest = {
         query: 'server/chat?addMyMessage',
@@ -51,21 +48,36 @@ class ClientChatModule extends VuexModule {
     })
   }
   @Action
-  @LogCall
+  @LogClientCall
   public renameMe (name: string) {
-    return new Promise((resolve) => {
-      const data: IClientRequest = {
-        query: 'server/auth?renameMe',
-        data: {
-          params: {
-            name
+    return new Promise(async (resolve, reject) => {
+      try {
+        const data: IClientRequest = {
+          query: 'server/auth?renameMe',
+          data: {
+            params: {
+              name
+            }
           }
         }
-      }
-      ClientModule.send(data).then(() => {
-        this.setLogin(true)
+        await ClientModule.send(data)
         resolve()
-      })
+      } catch (err) {
+        reject(err)
+      }
+    })
+  }
+  @Action
+  @LogClientCall
+  public loginMe (name: string) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        await this.renameMe(name)
+        this.setLogin(true)
+        resolve(this.isLogined)
+      } catch (err) {
+        reject(err)
+      }
     })
   }
 }

@@ -1,20 +1,27 @@
 <template>
-  <div class="settings">
-    <div v-if="linkToConnect">
-      Ваша игра будет доступна по адресу <a
+  <div
+    v-if="linkToConnect"
+    class="create-host"
+  >
+    <v-alert>
+      Чат создан и доступен по адресу
+      <a
         :href="linkToConnect"
         target="_blank"
+        @click.prevent
       >{{ linkToConnect }}</a>
-    </div>
-    <div v-else>
-      Генерация ссылки...
-    </div>
+    </v-alert>
+
+    <JoinChat :server-id="existingHostId" />
+  </div>
+  <div v-else>
+    Генерация ссылки...
   </div>
 </template>
 
 <script lang="ts">
-import Chat from '@/components/Chat.vue'
-import User from '@/models/server/User.ts'
+import JoinChat from '@/components/JoinChat.vue'
+import User from '@/models/server/User'
 import nanoid from 'nanoid'
 
 import Server from '@/models/server/Server'
@@ -26,12 +33,12 @@ import { isNil, get } from 'lodash-es'
 
 @Component({
   components: {
-    Chat
+    JoinChat
   }
 })
 export default class CreateHost extends Vue {
-  mounted () {
-    this.createGame()
+  created () {
+    this.createChat()
   }
 
   get linkToConnect () {
@@ -59,7 +66,7 @@ export default class CreateHost extends Vue {
       }
     })
   }
-  private createGame () {
+  private createChat () {
     if (!isNil(this.existingHostId)) {
       ServerModule.create(this.existingHostId)
     } else {
@@ -69,3 +76,11 @@ export default class CreateHost extends Vue {
 }
 
 </script>
+
+<style scoped>
+.create-host {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+</style>

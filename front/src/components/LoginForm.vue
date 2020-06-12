@@ -1,37 +1,36 @@
 
 <template>
-  <v-container>
-    <v-form
-      v-if="isJoinedToServer"
+  <div>
+    <form
       @submit.prevent="onLogin"
     >
-      <v-text-field v-model="name" />
+      <v-text-field
+        v-model="name"
+        placeholder="Ваше Имя"
+      />
       <v-btn type="submit">
-        login
+        Войти в чат
       </v-btn>
-    </v-form>
-    <span v-else>Подключение к серверу</span>
-  </v-container>
+    </form>
+  </div>
 </template>
 
 <script lang="ts">
-import { Vue, Component, Prop, Emit } from 'vue-property-decorator'
-
-import ChatModule from '@/store/modules/client-chat'
-import { IClientRequest } from '@/models/client/ClientRequest'
+import { Vue, Component, Emit } from 'vue-property-decorator'
 
 @Component({})
 export default class LoginFrom extends Vue {
-  @Prop() private isJoinedToServer: boolean = false
-
   private name: string = ''
 
-  @Emit('on-join')
-  onJoin () {}
+  @Emit('join')
+  onJoin () {
+    return {
+      name: this.name
+    }
+  }
 
   onLogin () {
     this.onJoin()
-    ChatModule.renameMe(this.name)
   }
 }
 </script>

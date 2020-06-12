@@ -1,3 +1,4 @@
+
 <template>
   <div>
     <JoinChat :server-id="serverId" />

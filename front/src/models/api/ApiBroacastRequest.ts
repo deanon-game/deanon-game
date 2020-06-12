@@ -1,21 +1,21 @@
-import { IChatMessages } from '@/models/api/ChatMessages'
+import Message from '../server/Message'
 
 interface IApiBroadcast {
-  messages?: IChatMessages
+  messages?: Message[]
   timestamp: Date
 }
 
 interface IApiBroadcastConstructorPayload {
-  messages?: IChatMessages
+  messages?: Message[]
   timestamp?: Date
 }
 
 export default class ApiBroadcast implements IApiBroadcast {
-  messages?: IChatMessages
+  messages?: Message[]
   timestamp: Date = new Date()
   constructor (payload: IApiBroadcastConstructorPayload) {
     if (payload.messages) {
-      this.messages = { ...payload.messages }
+      this.messages = [...payload.messages]
     }
   }
 }

@@ -1,85 +1,99 @@
 import store from '@/store/index'
-import Vue from 'vue'
 import { Module, VuexModule, Mutation, Action, getModule } from 'vuex-module-decorators'
 
 import ApiRequest from '@/models/api/ApiRequest'
 import Message from '@/models/server/Message'
-import { ICoreModule } from '@/models/server/Module'
 
 import defaultLogo from '@/assets/anonymous.svg'
-import { LogCall } from '@/helpers/decorators/log'
+import { LogHostCall } from '@/helpers/decorators/log'
 import CoreModule from '@/store/modules/server-core'
-import { IChatMessages } from '@/models/api/ChatMessages'
 import ApiBroadcast from '@/models/api/ApiBroacastRequest'
-import Client from '@/models/server/Client'
-import Server from '@/models/server/Server'
 import { has } from 'lodash-es'
+import { HostLogger } from '../../helpers/logger'
 
 export interface IChatPermissions {
   all?: boolean
 }
-export interface IChatModule extends ICoreModule {
+export interface IChatModule {
   readonly count: number
-  readonly messages: IChatMessages
+  readonly messages: Message[]
   addMyMessage (message: Message): void
 }
 
-@Module({ dynamic: true, store, name: 'chat' })
+@Module({ dynamic: true, store, name: 'serverChat' })
 class ChatModule extends VuexModule implements IChatModule {
-  private _messages: IChatMessages = {}
+  private _messages: Message[] = []
   private _count: number = 0
   public defaultLogo: any = defaultLogo
 
   get count () {
     return this._count
   }
-  get messages () {
+  get messages (): Message[] {
     return this._messages
   }
 
   @Mutation
-  @LogCall
-  private incrementCount () {
-    this._count += 1
-  }
-  @Mutation
-  @LogCall
+  @LogHostCall
   private addMessage (message: Message) {
-    Vue.set(this._messages, this._count, message)
+    this._messages.push(message)
+  }
+
+  @Mutation
+  @LogHostCall
+  private clearAllMessages () {
+    this._messages = []
   }
 
   @Action
-  @LogCall
-  public addMyMessage (message: Message) {
+  @LogHostCall
+  public async addMyMessage (message: Message) {
     this.addMessage(message)
-    this.incrementCount()
-    CoreModule.broadcastChatData(new ApiBroadcast({
+    await CoreModule.broadcastChatData(new ApiBroadcast({
       messages: this.messages
     }))
   }
 
   @Action
-  @LogCall
-  private processAddMyMessageRequest (request: ApiRequest) {
+  @LogHostCall
+  private async processAddMyMessageRequest (request: ApiRequest) {
     // TODO: add permission check
+    console.log('processAddMyMessageRequest')
     if (
       has(request, 'data.params.newMessage') &&
       typeof request.data.params.newMessage === 'string'
     ) {
-      console.log('data', request)
-      this.addMyMessage(
-        new Message(request.caller, request.data.params.newMessage)
-      )
+      const newMessage = new Message(request.caller, request.data.params.newMessage)
+      console.log('NEW Message', newMessage)
+      await this.addMyMessage(newMessage)
     }
   }
 
   @Action
-  @LogCall
-  process (request: ApiRequest) {
-    switch (request.query) {
-      case 'server/chat?addMyMessage':
-        this.processAddMyMessageRequest(request)
-        break
+  @LogHostCall
+  private async processClearAllMessages (request: ApiRequest) {
+    this.clearAllMessages()
+    await CoreModule.broadcastChatData(new ApiBroadcast({
+      messages: this.messages
+    }))
+  }
+
+  @Action
+  @LogHostCall
+  async processChat (request: ApiRequest) {
+    try {
+      if (!request) return
+
+      switch (request.query) {
+        case 'server/chat?addMyMessage':
+          await this.processAddMyMessageRequest(request)
+          break
+        case 'server/chat?clearAllMessages':
+          await this.processClearAllMessages(request)
+          break
+      }
+    } catch (err) {
+      HostLogger.error('process', err)
     }
   }
 }

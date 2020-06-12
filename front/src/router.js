@@ -20,12 +20,7 @@ export default new Router({
     {
       path: '/join/:id',
       name: 'join',
-      component: () => import(/* webpackChunkName: "JoinGame" */ './views/JoinGame.vue')
-    },
-    {
-      path: '/lobby/:id',
-      name: 'lobby',
-      component: () => import(/* webpackChunkName: "Lobby" */ './views/GameLobby.vue')
+      component: () => import(/* webpackChunkName: "JoinGame" */ './views/JoinChat.vue')
     }
   ]
 })

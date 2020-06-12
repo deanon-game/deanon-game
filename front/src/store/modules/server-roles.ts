@@ -5,9 +5,7 @@ import { get } from 'lodash-es'
 import store from '@/store/index'
 import { Module, VuexModule, Action, getModule } from 'vuex-module-decorators'
 
-import { LogCall } from '@/helpers/decorators/log'
-
-import { ICoreModule } from '@/models/server/Module'
+import { LogHostCall } from '@/helpers/decorators/log'
 
 interface PermissionToCheck {
   caller: User,
@@ -24,8 +22,8 @@ export interface IRolesPermissions {
   all?: boolean
 }
 
-@Module({ dynamic: true, store, name: 'roles' })
-class RolesModule extends VuexModule implements ICoreModule {
+@Module({ dynamic: true, store, name: 'serverRoles' })
+class RolesModule extends VuexModule {
   get defaultPermissions (): Permission {
     return {
       all: false,
@@ -52,7 +50,7 @@ class RolesModule extends VuexModule implements ICoreModule {
   }
 
   @Action
-  @LogCall
+  @LogHostCall
   hasPermission (permissionToCheck: PermissionToCheck): Promise<boolean> {
     return new Promise((resolve) => {
       const path = permissionToCheck.path.replace('/', '.')

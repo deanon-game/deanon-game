@@ -3,7 +3,6 @@ import ApiRequest from '@/models/api/ApiRequest'
 
 class DeanonGame implements IAddonModule {
   public process (request: ApiRequest):ApiRequest {
-    console.log('deanonGame', request)
     return request
   }
 }

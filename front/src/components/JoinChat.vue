@@ -1,57 +1,67 @@
-
 <template>
-  <v-container>
-    <Chat v-if="isLogined" />
+  <section class="full-parrent">
+    <Chat
+      v-if="isLogined"
+      class="full-parrent"
+    />
     <LoginForm
       v-else
-      :is-joined-to-server="isJoined"
+      class="full-parrent"
+      :is-joined-to-server="isJoinedToServer"
+      @join="joinChat"
     />
-  </v-container>
+  </section>
 </template>
 
 <script lang="ts">
 import { Vue, Component, Prop } from 'vue-property-decorator'
-import ChatMessage from './ChatMessage.vue'
+import Chat from '@/components/Chat.vue'
+import LoginForm from '@/components/LoginForm.vue'
 
 import ClientModule, { ConnectionPayload } from '@/store/modules/client-core'
 import ClientChatModule from '@/store/modules/client-chat'
 import { IClientRequest } from '@/models/client/ClientRequest'
-import Chat from '@/components/Chat.vue'
-import LoginForm from '@/components/LoginForm.vue'
 
 @Component({
   components: {
-    ChatMessage,
     Chat,
     LoginForm
   }
 })
 export default class JoinChat extends Vue {
-  @Prop({
-    type: String,
-    required: true
-  }) readonly serverId!: string
+  private isLogined: boolean = false
 
-  get isLogined () {
-    return ClientChatModule.isLogined
-  }
+  @Prop({ type: String, required: true }) serverId!: string
 
-  created () {
-    this.joinChat()
-  }
+  private isJoinedToServer: boolean = false
 
-  private isJoined: boolean = false
-  joinChat () {
+  async created () {
     const payload: ConnectionPayload = {
       serverId: this.serverId
     }
-    ClientModule.connect(payload).then(() => {
-      this.isJoined = true
+    await ClientModule.connect(payload)
+    this.isJoinedToServer = true
+  }
+
+  mounted () {
+    window.addEventListener('beforeunload', (event) => {
+      let evt = event || window.event
+      evt.preventDefault()
+      evt.returnValue = ''
+      return ''
     })
+  }
+
+  async joinChat ({ name }: {name: string}) {
+    await ClientChatModule.loginMe(name)
+    this.isLogined = true
   }
 }
 </script>
 
 <style scoped>
-
+.full-parrent {
+  display: flex;
+  flex: 1 1 auto;
+}
 </style>

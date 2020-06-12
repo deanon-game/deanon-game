@@ -1,10 +1,10 @@
 <template>
   <div
-    class="chat-container"
+    class="chat"
   >
     <div
       v-chat-scroll="{always: false, smooth: true}"
-      class="messages-container"
+      class="message-box"
     >
       <ChatMessage
         v-for="(message, key) in messages"
@@ -12,30 +12,34 @@
         :message="message"
       />
     </div>
-    <v-row>
-      <v-form
-        class="chat-form"
-        @submit.prevent="sendMsg"
-      >
-        <v-col sm="10">
-          <v-textarea
-            v-model="newMessage"
-            solo
-            autofocus
-            no-resize
-            label="Ваше сообщение..."
-            @keyup.ctrl.enter="sendMsg"
-          />
-        </v-col>
-        <v-col>
-          <v-btn
-            type="submit"
-          >
-            send
-          </v-btn>
-        </v-col>
-      </v-form>
-    </v-row>
+    <form
+      class="chat__form"
+      @submit.prevent="sendMsg"
+    >
+      <section>
+        <v-textarea
+          v-model="newMessage"
+          solo
+          autofocus
+          no-resize
+          label="Ваше сообщение..."
+          @keyup.ctrl.enter="sendMsg"
+        />
+      </section>
+      <section>
+        <v-btn
+          type="submit"
+        >
+          Отправить
+        </v-btn>
+        <v-btn
+          type="button"
+          @click="deleteAllMessages"
+        >
+          Удалить все сообщения
+        </v-btn>
+      </section>
+    </form>
   </div>
 </template>
 
@@ -44,7 +48,6 @@ import { Vue, Component } from 'vue-property-decorator'
 import ChatMessage from '@/components/ChatMessage.vue'
 import ClientChatModule from '@/store/modules/client-chat'
 import Message from '@/models/server/Message'
-import { IChatMessages } from '@/models/api/ChatMessages'
 import ClientModule, { ConnectionPayload } from '@/store/modules/client-core'
 import { IClientRequest } from '@/models/client/ClientRequest'
 
@@ -56,7 +59,7 @@ import { IClientRequest } from '@/models/client/ClientRequest'
 export default class Chat extends Vue {
   private newMessage: string = ''
 
-  get messages (): IChatMessages {
+  get messages (): Message[] {
     return ClientChatModule.clientMessages
   }
 
@@ -64,8 +67,16 @@ export default class Chat extends Vue {
     this.newMessage = ''
   }
 
+  private deleteAllMessages () {
+    ClientModule.send({
+      query: 'server/chat?clearAllMessages'
+    })
+  }
+
   private sendMsg () {
-    ClientChatModule.addMyMessage(this.newMessage).then(() => {
+    if (this.newMessage.length === 0) return
+
+    ClientChatModule.addMyClientMessage(this.newMessage).then(() => {
       this.clearChatForm()
     })
   }
@@ -73,21 +84,20 @@ export default class Chat extends Vue {
 </script>
 
 <style scoped>
-.chat-container {
-  height: 100vh;
-  max-height: 100vh;
+.chat {
+  display: flex;
+  flex-direction: column;
   overflow: hidden;
 }
 
-.messages-container {
-  max-height: 70vh;
-  min-height: 70vh;
+.message-box {
   overflow-x: hidden;
   overflow-y: scroll;
+  flex: 1 1 auto;
 }
 
-.chat-form {
-  display: flex;
-  width: 100%;
+.chat__form {
+  /* display: flex; */
+  /* width: 100%; */
 }
 </style>
